@@ -14,6 +14,7 @@ import MatrixView from '@/components/MatrixView';
 import DashboardView from '@/components/DashboardView';
 import RisksView from '@/components/RisksView';
 import GlobalView from '@/pages/GlobalView';
+import GlobalViewDemo from '@/pages/GlobalViewDemo';
 
 interface Study {
   id: number;
@@ -64,10 +65,12 @@ export default function FeasibilityStudy() {
 
   if (!currentStudy && studies.length === 0) {
     return (
-      <div className="min-h-screen blueprint-grid bg-background flex flex-col items-center justify-center p-4">
-        <div className="blueprint-container max-w-md w-full text-center">
-          <h1 className="blueprint-title mb-4">Étude de Faisabilité</h1>
-          <p className="text-muted-foreground mb-6">Créez votre première étude de faisabilité pour commencer</p>
+      <>
+        <GlobalViewDemo />
+        <div className="min-h-screen blueprint-grid bg-background flex flex-col items-center justify-center p-4 hidden">
+          <div className="blueprint-container max-w-md w-full text-center">
+            <h1 className="blueprint-title mb-4">Étude de Faisabilité</h1>
+            <p className="text-muted-foreground mb-6">Créez votre première étude de faisabilité pour commencer</p>
           
           <Dialog open={showNewStudyDialog} onOpenChange={setShowNewStudyDialog}>
             <DialogTrigger asChild>
@@ -111,6 +114,7 @@ export default function FeasibilityStudy() {
           </Dialog>
         </div>
       </div>
+      </>
     );
   }
 
