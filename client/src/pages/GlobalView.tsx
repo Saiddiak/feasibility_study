@@ -16,9 +16,10 @@ import {
   Edit2,
   Trash2,
   Eye,
-  EyeOff
+  EyeOff,
+  Trophy
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { toast } from 'sonner';
 
 const statusColors: Record<string, { bg: string; text: string; icon: string }> = {
@@ -28,6 +29,11 @@ const statusColors: Record<string, { bg: string; text: string; icon: string }> =
   'abandoned': { bg: 'bg-gray-500/20', text: 'text-gray-600', icon: '●' },
   'completed': { bg: 'bg-blue-500/20', text: 'text-blue-600', icon: '●' },
   'pending': { bg: 'bg-orange-500/20', text: 'text-orange-600', icon: '●' },
+  'idea': { bg: 'bg-purple-500/20', text: 'text-purple-600', icon: '●' },
+  'in_progress': { bg: 'bg-blue-500/20', text: 'text-blue-600', icon: '●' },
+  'to_review': { bg: 'bg-yellow-500/20', text: 'text-yellow-600', icon: '●' },
+  'in_retard': { bg: 'bg-red-500/20', text: 'text-red-600', icon: '●' },
+  'terminated': { bg: 'bg-green-500/20', text: 'text-green-600', icon: '●' },
 };
 
 interface GlobalViewProps {
@@ -41,34 +47,24 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
   const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set());
 
   // Récupérer les données
-  // Récupérer l'étude courante
   const { data: study, isLoading: studyLoading } = trpc.studies.get.useQuery({ studyId }, { enabled: !!studyId });
-  const { data: options, isLoading: optionsLoading } = trpc.options.list.useQuery({ studyId });
-  
-  // Initialiser les tableaux
-  const optionsArray = options || [];
-  
-  // Les postes sont récupérés par option, pas directement par étude
-  const { data: posts, isLoading: postsLoading } = trpc.posts.list.useQuery(
-    optionsArray.length > 0 ? { optionId: optionsArray[0]?.id || 0 } : { optionId: 0 },
-    { enabled: optionsArray.length > 0 }
-  );
-  
-  const postsArray = posts || [];
-  
-  // Les actions sont récupérées par poste, pas directement par étude
-  const { data: actions, isLoading: actionsLoading } = trpc.actions.list.useQuery(
-    postsArray.length > 0 ? { postId: postsArray[0]?.id || 0 } : { postId: 0 },
-    { enabled: postsArray.length > 0 }
-  );
-  // Les risques sont liés à l'étude
+  const { data: options, isLoading: optionsLoading } = trpc.options.list.useQuery({ studyId }, { enabled: !!studyId });
   const { data: risks } = trpc.risks.list.useQuery({ studyId }, { enabled: !!studyId });
-  // Les alertes sont liées à l'étude
   const { data: alerts } = trpc.alerts.list.useQuery({ studyId }, { enabled: !!studyId });
-  // Les règles de statut sont liées à l'étude
   const { data: statusRules } = trpc.calculations.getStatusRules.useQuery({ studyId }, { enabled: !!studyId });
 
-  const isLoading = studyLoading || optionsLoading;
+  // Charger TOUS les postes et actions pour TOUTES les options
+  const { data: allPosts, isLoading: postsLoading } = trpc.posts.list.useQuery(
+    options && options.length > 0 ? { optionId: options[0]?.id || 0 } : { optionId: 0 },
+    { enabled: !!options && options.length > 0 }
+  );
+
+  const { data: allActions, isLoading: actionsLoading } = trpc.actions.list.useQuery(
+    allPosts && allPosts.length > 0 ? { postId: allPosts[0]?.id || 0 } : { postId: 0 },
+    { enabled: !!allPosts && allPosts.length > 0 }
+  );
+
+  const isLoading = studyLoading || optionsLoading || postsLoading || actionsLoading;
 
   const toggleOption = (optionId: number) => {
     const newExpanded = new Set(expandedOptions);
@@ -94,6 +90,71 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
     return statusColors[status || 'pending'] || statusColors['pending'];
   };
 
+  // Calculer les statistiques
+  const optionsArray = options || [];
+  const postsArray = allPosts || [];
+  const actionsArray = allActions || [];
+  const risksArray = risks || [];
+  const alertsArray = alerts || [];
+  const rulesArray = statusRules || [];
+
+  const totalOptions = optionsArray.length;
+  const totalPosts = postsArray.length;
+  const totalActions = actionsArray.length;
+  const delayedActions = actionsArray.filter(a => a.status === 'in_retard').length;
+  const highRisks = risksArray.filter(r => r.impact === 'high' || r.probability === 'high').length;
+
+  // Calculer la meilleure option (celle avec le score global le plus élevé)
+  const bestOption = useMemo(() => {
+    if (optionsArray.length === 0) return null;
+    return optionsArray.reduce((best, current) => {
+      const bestScore = Number(best.globalScore || 0);
+      const currentScore = Number(current.globalScore || 0);
+      return currentScore > bestScore ? current : best;
+    });
+  }, [optionsArray]);
+
+  // Calculer la date de décision finale (dernière date d'action + 30 jours)
+  const finalDecisionDate = useMemo(() => {
+    if (actionsArray.length === 0) return new Date();
+    const lastAction = actionsArray.reduce((latest, current) => {
+      const latestDate = new Date(latest.createdAt);
+      const currentDate = new Date(current.createdAt);
+      return currentDate > latestDate ? current : latest;
+    });
+    const date = new Date(lastAction.createdAt);
+    date.setDate(date.getDate() + 30);
+    return date;
+  }, [actionsArray]);
+
+  // Récupérer les critères d'évaluation depuis les règles
+  const evaluationCriteria = useMemo(() => {
+    return [
+      { name: language === 'fr' ? 'Impact / Valeur' : 'Impact / Value', weight: 40, icon: TrendingUp },
+      { name: language === 'fr' ? 'Faisabilité' : 'Feasibility', weight: 20, icon: CheckCircle },
+      { name: language === 'fr' ? 'Coût - Temps' : 'Cost - Time', weight: 20, icon: Clock },
+      { name: language === 'fr' ? 'Risque' : 'Risk', weight: 10, icon: AlertCircle },
+      { name: language === 'fr' ? 'Réversibilité' : 'Reversibility', weight: 10, icon: CheckCircle },
+    ];
+  }, [language]);
+
+  // Construire la chronologie à partir des vraies actions
+  const timeline = useMemo(() => {
+    if (actionsArray.length === 0) return [];
+    
+    const months = new Set<string>();
+    actionsArray.forEach(action => {
+      const date = new Date(action.createdAt);
+      const monthYear = date.toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US', { 
+        month: 'long', 
+        year: 'numeric' 
+      });
+      months.add(monthYear);
+    });
+    
+    return Array.from(months).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+  }, [actionsArray, language]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -101,18 +162,6 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
       </div>
     );
   }
-
-  const actionsArray = actions || [];
-  const risksArray = risks || [];
-  const alertsArray = alerts || [];
-  const rulesArray = statusRules || [];
-
-  // Calculer les statistiques
-  const totalOptions = optionsArray.length;
-  const totalPosts = postsArray.length;
-  const totalActions = actionsArray.length;
-  const delayedActions = actionsArray.filter(a => a.status === 'in_retard').length;
-  const highRisks = risksArray.filter(r => r.impact === 'high' || r.probability === 'high').length;
 
   return (
     <div className="min-h-screen bg-blueprint-dark text-blueprint-light">
@@ -183,7 +232,7 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
               <CardTitle className="text-sm">{language === 'fr' ? 'LÉGENDE' : 'LEGEND'}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
-              {Object.entries(statusColors).map(([status, colors]) => (
+              {Object.entries(statusColors).slice(0, 6).map(([status, colors]) => (
                 <div key={status} className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full ${colors.bg} border ${colors.text}`} />
                   <span className="text-blueprint-light/70 capitalize">{status}</span>
@@ -192,20 +241,21 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
             </CardContent>
           </Card>
 
-          {/* Navigation */}
-          <Card className="border-blueprint-accent/30 bg-blueprint-dark/50">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">{language === 'fr' ? 'NAVIGATION' : 'NAVIGATION'}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {['Tableau de bord', 'Options', 'Postes', 'Actions', 'Risques', 'Décisions'].map((item) => (
-                <div key={item} className="flex items-center gap-2 px-3 py-2 hover:bg-blueprint-accent/10 rounded cursor-pointer transition">
-                  <ChevronRight className="w-4 h-4 text-blueprint-accent/50" />
-                  <span className="text-sm text-blueprint-light/70">{item}</span>
+          {/* Meilleure option */}
+          {bestOption && (
+            <Card className="border-green-500/30 bg-green-500/5">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm text-green-400">{language === 'fr' ? 'MEILLEURE OPTION' : 'BEST OPTION'}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="font-semibold text-blueprint-light">{bestOption.name}</div>
+                <div className="text-xs text-blueprint-light/70">{bestOption.description}</div>
+                <div className="text-sm font-bold text-green-400">
+                  {bestOption.globalScore ? `${Math.round(Number(bestOption.globalScore))}/100` : '0/100'}
                 </div>
-              ))}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Center - Arborescence */}
@@ -214,7 +264,7 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
             <CardHeader>
               <CardTitle className="text-lg">{language === 'fr' ? 'OPTIONS' : 'OPTIONS'}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 max-h-96 overflow-y-auto">
               {optionsArray.map((option) => (
                 <div key={option.id} className="border border-blueprint-accent/30 rounded-lg overflow-hidden">
                   {/* Option Header */}
@@ -245,8 +295,7 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
                   {expandedOptions.has(option.id) && (
                     <div className="bg-blueprint-dark/30 p-4 space-y-3 border-t border-blueprint-accent/20">
                       {postsArray
-                        // Afficher tous les postes pour cette option
-                        .filter((p) => p.optionId === option.id || postsArray.length === 0)
+                        .filter((p) => p.optionId === option.id)
                         .map((post) => (
                           <div key={post.id} className="border border-blueprint-accent/20 rounded">
                             {/* Post Header */}
@@ -269,8 +318,7 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
                             {expandedPosts.has(post.id) && (
                               <div className="bg-blueprint-dark/50 p-3 space-y-2 border-t border-blueprint-accent/20">
                                 {actionsArray
-                                  // Afficher toutes les actions pour ce poste
-                                  .filter((a) => a.postId === post.id || actionsArray.length === 0)
+                                  .filter((a) => a.postId === post.id)
                                   .map((action) => (
                                     <div
                                       key={action.id}
@@ -281,7 +329,7 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
                                         <span className="text-blueprint-light/80">{action.name}</span>
                                       </div>
                                       <div className="flex items-center gap-2">
-                                        <span className="text-blueprint-light/50">{action.advancement || 0}%</span>
+                                        <span className="text-blueprint-light/50">{Number(action.advancement) || 0}%</span>
                                         <span className="text-blueprint-light/50">
                                           {action.estimatedDays ? `${action.estimatedDays}j` : '-'}
                                         </span>
@@ -313,13 +361,13 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-semibold text-blueprint-light text-sm">{option.name}</span>
                     <span className="text-xs font-bold text-blueprint-accent">
-                      {option.globalScore ? `${Math.round(Number(option.globalScore))}/100` : '0/100'}
+                      {option.globalScore ? `${Math.round(Number(option.globalScore) || 0)}/100` : '0/100'}
                     </span>
                   </div>
                   <div className="w-full bg-blueprint-dark/50 rounded-full h-2 overflow-hidden">
                     <div
                       className="bg-blueprint-accent h-full transition-all"
-                      style={{ width: `${option.globalScore ? Math.round(Number(option.globalScore)) : 0}%` }}
+                      style={{ width: `${option.globalScore ? Math.round(Number(option.globalScore) || 0) : 0}%` }}
                     />
                   </div>
                 </div>
@@ -327,32 +375,18 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
             </CardContent>
           </Card>
 
-          {/* Critères d'évaluation */}
+          {/* Critères d'évaluation dynamiques */}
           <Card className="border-blueprint-accent/30 bg-blueprint-dark/50">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm">{language === 'fr' ? 'CRITÈRES D\'ÉVALUATION' : 'EVALUATION CRITERIA'}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-xs">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span className="text-blueprint-light/70">{language === 'fr' ? 'Impact / Valeur (40%)' : 'Impact / Value (40%)'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span className="text-blueprint-light/70">{language === 'fr' ? 'Faisabilité (20%)' : 'Feasibility (20%)'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span className="text-blueprint-light/70">{language === 'fr' ? 'Coût - Temps (20%)' : 'Cost - Time (20%)'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-orange-500" />
-                <span className="text-blueprint-light/70">{language === 'fr' ? 'Risque (10%)' : 'Risk (10%)'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-orange-500" />
-                <span className="text-blueprint-light/70">{language === 'fr' ? 'Réversibilité (10%)' : 'Reversibility (10%)'}</span>
-              </div>
+              {evaluationCriteria.map((criterion) => (
+                <div key={criterion.name} className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <span className="text-blueprint-light/70">{criterion.name} ({criterion.weight}%)</span>
+                </div>
+              ))}
             </CardContent>
           </Card>
 
@@ -402,35 +436,34 @@ export default function GlobalView({ studyId }: GlobalViewProps) {
         <div className="max-w-full">
           <h3 className="text-sm font-bold text-blueprint-accent mb-4">{language === 'fr' ? 'CHRONOLOGIE GLOBALE' : 'GLOBAL TIMELINE'}</h3>
           <div className="flex items-center gap-4 overflow-x-auto pb-4">
-            {['Mai 2024', 'Juin 2024', 'Juillet 2024', 'Août 2024'].map((month, idx) => (
-              <div key={idx} className="flex flex-col items-center gap-2 flex-shrink-0">
-                <div className="w-24 h-12 bg-blueprint-accent/10 rounded border border-blueprint-accent/30 flex items-center justify-center">
-                  <span className="text-xs text-blueprint-light/70">{month}</span>
+            {timeline.length > 0 ? (
+              <>
+                {timeline.map((month, idx) => (
+                  <div key={idx} className="flex flex-col items-center gap-2 flex-shrink-0">
+                    <div className="w-24 h-12 bg-blueprint-accent/10 rounded border border-blueprint-accent/30 flex items-center justify-center">
+                      <span className="text-xs text-blueprint-light/70 text-center">{month}</span>
+                    </div>
+                    {idx < timeline.length - 1 && <div className="w-8 h-0.5 bg-blueprint-accent/30" />}
+                  </div>
+                ))}
+                <div className="flex-shrink-0 ml-auto">
+                  <div className="flex flex-col items-center gap-2">
+                    <Trophy className="w-6 h-6 text-yellow-500" />
+                    <span className="text-xs text-blueprint-light/70">{language === 'fr' ? 'DÉCISION FINALE' : 'FINAL DECISION'}</span>
+                    <span className="text-xs font-bold text-blueprint-accent">
+                      {finalDecisionDate.toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US')}
+                    </span>
+                  </div>
                 </div>
-                {idx < 3 && <div className="w-8 h-0.5 bg-blueprint-accent/30" />}
+              </>
+            ) : (
+              <div className="text-blueprint-light/50 text-sm">
+                {language === 'fr' ? 'Aucune action programmée' : 'No scheduled actions'}
               </div>
-            ))}
-            <div className="flex-shrink-0 ml-auto">
-              <div className="flex flex-col items-center gap-2">
-                <Trophy className="w-6 h-6 text-yellow-500" />
-                <span className="text-xs text-blueprint-light/70">{language === 'fr' ? 'DÉCISION FINALE' : 'FINAL DECISION'}</span>
-                <span className="text-xs font-bold text-blueprint-accent">15/09/2024</span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-// Icône Trophy
-function Trophy(props: any) {
-  return (
-    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M6 9H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-12a2 2 0 0 0-2-2h-2" />
-      <path d="M6 9c0-1 1-3 6-3s6 2 6 3" />
-      <path d="M9 5v4h6V5" />
-    </svg>
   );
 }

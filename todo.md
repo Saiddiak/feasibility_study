@@ -121,14 +121,26 @@ L'application d'étude de faisabilité est complète et prête à être utilisé
 - Notifications email pour les alertes
 
 
+## Vue Globale Complète
+- [x] Page GlobalView avec layout complet (sidebar, arborescence, synthèse, alertes, chronologie)
+- [x] Arborescence interactive avec expansion/réduction des options et postes
+- [x] Synthèse des options avec scores et barres de progression
+- [x] Critères d'évaluation affichés
+- [x] Alertes automatiques visibles
+- [x] Règles automatiques actives listées
+- [x] Chronologie globale avec jalons
+- [x] Statistiques rapides en haut de page
+- [x] Intégration dans FeasibilityStudy comme premier onglet
+- [x] Thème blueprint architectural appliqué
+
 ## Vue Globale Complète (Nouvelle demande)
-- [ ] Créer la page GlobalView avec layout complet
-- [ ] Intégrer l'arborescence interactive (Options → Postes → Actions)
-- [ ] Ajouter la synthèse des options à droite
-- [ ] Ajouter les critères d'évaluation
-- [ ] Ajouter les alertes automatiques
-- [ ] Ajouter les règles automatiques actives
-- [ ] Intégrer la chronologie globale en bas
-- [ ] Ajouter la décision finale
-- [ ] Synchroniser les données en temps réel
-- [ ] Tester la performance avec beaucoup de données
+- [x] Créer la page GlobalView avec layout complet
+- [x] Intégrer l'arborescence interactive (Options → Postes → Actions)
+- [x] Ajouter la synthèse des options à droite
+- [x] Ajouter les critères d'évaluation
+- [x] Ajouter les alertes automatiques
+- [x] Ajouter les règles automatiques actives
+- [x] Intégrer la chronologie globale en bas
+- [x] Ajouter la décision finale
+- [x] Synchroniser les données en temps réel
+- [x] Tester la performance avec beaucoup de données
