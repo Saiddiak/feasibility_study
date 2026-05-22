@@ -4,9 +4,17 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
+import { scoringRouter } from "./scoring.router";
+import { calculationsRouter } from "./calculations.router";
+import { exportRouter } from "./export.router";
+import { aiRouter } from "./ai.router";
 
 export const appRouter = router({
   system: systemRouter,
+  scoring: scoringRouter,
+  calculations: calculationsRouter,
+  export: exportRouter,
+  ai: aiRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
@@ -194,35 +202,47 @@ export const appRouter = router({
   // ============ RISQUES ============
   risks: router({
     list: protectedProcedure
-      .input(z.object({ postId: z.number() }))
+      .input(z.object({ studyId: z.number() }))
       .query(async ({ input }) => {
-        return db.getRisksByPostId(input.postId);
+        return db.getRisksByStudyId(input.studyId);
       }),
 
     create: protectedProcedure
       .input(z.object({ 
-        postId: z.number(),
-        title: z.string(),
-        description: z.string().optional(),
+        studyId: z.number(),
+        description: z.string(),
+        probability: z.number(),
+        impact: z.number(),
+        mitigationPlan: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
-        return db.createRisk(input.postId, input.title, input.description);
+        return db.createRisk({
+          studyId: input.studyId,
+          title: input.description,
+          description: input.description,
+          probability: input.probability > 0.5 ? "high" : input.probability > 0.3 ? "medium" : "low",
+          impact: input.impact > 0.5 ? "high" : input.impact > 0.3 ? "medium" : "low",
+          actionPlan: input.mitigationPlan,
+        });
       }),
 
     update: protectedProcedure
       .input(z.object({ 
         riskId: z.number(),
-        title: z.string().optional(),
         description: z.string().optional(),
-        probability: z.enum(["low", "medium", "high"]).optional(),
-        impact: z.enum(["low", "medium", "high"]).optional(),
-        actionPlan: z.string().optional(),
-        owner: z.string().optional(),
-        status: z.enum(["identified", "mitigating", "mitigated", "closed"]).optional(),
+        probability: z.number().optional(),
+        impact: z.number().optional(),
+        mitigationPlan: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const { riskId, ...data } = input;
-        return db.updateRisk(riskId, data);
+        return db.updateRisk(riskId, data as any);
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ riskId: z.number() }))
+      .mutation(async ({ input }) => {
+        return db.deleteRisk(input.riskId);
       }),
   }),
 

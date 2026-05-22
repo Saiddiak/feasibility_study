@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus, ChevronDown, ChevronRight, Trash2, Edit2, AlertCircle } from 'lucide-react';
+import { ControlBar } from '@/components/ControlBar';
+import { useLanguage } from '@/contexts/LanguageContext';
 import TreeView from '@/components/TreeView';
 import TimelineView from '@/components/TimelineView';
 import MatrixView from '@/components/MatrixView';
@@ -21,6 +23,7 @@ interface Study {
 
 export default function FeasibilityStudy() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [studies, setStudies] = useState<Study[]>([]);
   const [currentStudy, setCurrentStudy] = useState<Study | null>(null);
   const [showNewStudyDialog, setShowNewStudyDialog] = useState(false);

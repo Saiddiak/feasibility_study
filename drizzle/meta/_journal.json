@@ -15,6 +15,13 @@
       "when": 1779475478466,
       "tag": "0001_simple_hannibal_king",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1779477027832,
+      "tag": "0002_ambitious_mole_man",
+      "breakpoints": true
     }
   ]
 }

@@ -58,7 +58,12 @@ export const options = mysqlTable("options", {
   description: text("description"),
   globalScore: decimal("globalScore", { precision: 5, scale: 2 }).default("0"),
   globalAdvancement: decimal("globalAdvancement", { precision: 5, scale: 2 }).default("0"),
-  status: mysqlEnum("status", ["idea", "in_progress", "to_review", "in_retard", "abandoned", "terminated"]).default("idea").notNull(),
+  costScore: decimal("costScore", { precision: 5, scale: 2 }).default("0"),
+  delayScore: decimal("delayScore", { precision: 5, scale: 2 }).default("0"),
+  feasibilityScore: decimal("feasibilityScore", { precision: 5, scale: 2 }).default("0"),
+  totalCost: decimal("totalCost", { precision: 12, scale: 2 }).default("0"),
+  totalDays: int("totalDays").default(0),
+  status: mysqlEnum("status", ["idea", "in_progress", "to_review", "in_retard", "abandoned", "terminated", "favorable", "risky", "blocked"]).default("idea").notNull(),
   order: int("order").default(0),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -119,7 +124,8 @@ export type InsertAction = typeof actions.$inferInsert;
  */
 export const risks = mysqlTable("risks", {
   id: int("id").autoincrement().primaryKey(),
-  postId: int("postId").notNull(),
+  studyId: int("studyId"),
+  postId: int("postId"),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   probability: mysqlEnum("probability", ["low", "medium", "high"]).default("medium").notNull(),
@@ -130,6 +136,7 @@ export const risks = mysqlTable("risks", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
+  studyIdIdx: index("risks_studyId_idx").on(table.studyId),
   postIdIdx: index("risks_postId_idx").on(table.postId),
 }));
 
@@ -266,6 +273,7 @@ export const actionDependencies = mysqlTable("actionDependencies", {
   actionId: int("actionId").notNull(),
   dependsOnActionId: int("dependsOnActionId").notNull(),
   dependencyType: mysqlEnum("dependencyType", ["finish_to_start", "start_to_start", "finish_to_finish", "start_to_finish"]).default("finish_to_start").notNull(),
+  lagDays: int("lagDays").default(0),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 }, (table) => ({
   actionIdIdx: index("actionDependencies_actionId_idx").on(table.actionId),
@@ -284,10 +292,31 @@ export const aiAnalyses = mysqlTable("aiAnalyses", {
   type: mysqlEnum("type", ["executive_summary", "best_option_suggestion", "risk_detection", "full_analysis"]).notNull(),
   content: text("content").notNull(),
   metadata: json("metadata"),
+  confidence: decimal("confidence", { precision: 3, scale: 2 }).default("0.5"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
   studyIdIdx: index("aiAnalyses_studyId_idx").on(table.studyId),
 }));
 
 export type AiAnalysis = typeof aiAnalyses.$inferSelect;
 export type InsertAiAnalysis = typeof aiAnalyses.$inferInsert;
+
+/**
+ * Traductions multilingues
+ */
+export const translations = mysqlTable("translations", {
+  id: int("id").autoincrement().primaryKey(),
+  studyId: int("studyId").notNull(),
+  language: varchar("language", { length: 5 }).notNull(), // fr, en
+  key: varchar("key", { length: 255 }).notNull(),
+  value: text("value").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  studyIdIdx: index("translations_studyId_idx").on(table.studyId),
+  languageIdx: index("translations_language_idx").on(table.language),
+}));
+
+export type Translation = typeof translations.$inferSelect;
+export type InsertTranslation = typeof translations.$inferInsert;

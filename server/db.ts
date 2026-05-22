@@ -21,7 +21,6 @@ import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
@@ -110,7 +109,17 @@ export async function getUserByOpenId(openId: string) {
 export async function getStudiesByUserId(userId: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(studies).where(eq(studies.userId, userId)).orderBy(desc(studies.updatedAt));
+  return db.select().from(studies).where(eq(studies.userId, userId));
+}
+
+export async function createStudy(userId: number, name: string, description?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(studies).values({
+    userId,
+    title: name,
+    description,
+  } as any);
 }
 
 export async function getStudyById(studyId: number) {
@@ -120,19 +129,7 @@ export async function getStudyById(studyId: number) {
   return result.length > 0 ? result[0] : null;
 }
 
-export async function createStudy(userId: number, title: string, description?: string) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  const result = await db.insert(studies).values({
-    userId,
-    title,
-    description,
-    status: "draft",
-  });
-  return result;
-}
-
-export async function updateStudy(studyId: number, data: Partial<typeof studies.$inferInsert>) {
+export async function updateStudy(studyId: number, data: any) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   return db.update(studies).set(data).where(eq(studies.id, studyId));
@@ -146,6 +143,16 @@ export async function getOptionsByStudyId(studyId: number) {
   return db.select().from(options).where(eq(options.studyId, studyId)).orderBy(options.order);
 }
 
+export async function createOption(studyId: number, name: string, description?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(options).values({
+    studyId,
+    name,
+    description,
+  });
+}
+
 export async function getOptionById(optionId: number) {
   const db = await getDb();
   if (!db) return null;
@@ -153,19 +160,7 @@ export async function getOptionById(optionId: number) {
   return result.length > 0 ? result[0] : null;
 }
 
-export async function createOption(studyId: number, name: string, description?: string) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  const result = await db.insert(options).values({
-    studyId,
-    name,
-    description,
-    order: 0,
-  });
-  return result;
-}
-
-export async function updateOption(optionId: number, data: Partial<typeof options.$inferInsert>) {
+export async function updateOption(optionId: number, data: any) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   return db.update(options).set(data).where(eq(options.id, optionId));
@@ -185,6 +180,16 @@ export async function getPostsByOptionId(optionId: number) {
   return db.select().from(posts).where(eq(posts.optionId, optionId)).orderBy(posts.order);
 }
 
+export async function createPost(optionId: number, name: string, description?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(posts).values({
+    optionId,
+    name,
+    description,
+  });
+}
+
 export async function getPostById(postId: number) {
   const db = await getDb();
   if (!db) return null;
@@ -192,19 +197,7 @@ export async function getPostById(postId: number) {
   return result.length > 0 ? result[0] : null;
 }
 
-export async function createPost(optionId: number, name: string, description?: string) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  const result = await db.insert(posts).values({
-    optionId,
-    name,
-    description,
-    order: 0,
-  });
-  return result;
-}
-
-export async function updatePost(postId: number, data: Partial<typeof posts.$inferInsert>) {
+export async function updatePost(postId: number, data: any) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   return db.update(posts).set(data).where(eq(posts.id, postId));
@@ -224,6 +217,20 @@ export async function getActionsByPostId(postId: number) {
   return db.select().from(actions).where(eq(actions.postId, postId)).orderBy(actions.order);
 }
 
+export async function createAction(postId: number, name: string, data?: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(actions).values({
+    postId,
+    name,
+    description: data?.description,
+    status: data?.status || "idea",
+    advancement: data?.advancement || 0,
+    cost: data?.cost || 0,
+    estimatedDays: data?.estimatedDays || 0,
+  });
+}
+
 export async function getActionById(actionId: number) {
   const db = await getDb();
   if (!db) return null;
@@ -231,20 +238,7 @@ export async function getActionById(actionId: number) {
   return result.length > 0 ? result[0] : null;
 }
 
-export async function createAction(postId: number, name: string, description?: string) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  const result = await db.insert(actions).values({
-    postId,
-    name,
-    description,
-    status: "idea",
-    order: 0,
-  });
-  return result;
-}
-
-export async function updateAction(actionId: number, data: Partial<typeof actions.$inferInsert>) {
+export async function updateAction(actionId: number, data: any) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   return db.update(actions).set(data).where(eq(actions.id, actionId));
@@ -258,29 +252,34 @@ export async function deleteAction(actionId: number) {
 
 // ============ RISQUES ============
 
+export async function getRisksByStudyId(studyId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(risks).where(eq(risks.studyId, studyId));
+}
+
 export async function getRisksByPostId(postId: number) {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(risks).where(eq(risks.postId, postId));
 }
 
-export async function createRisk(postId: number, title: string, description?: string) {
+export async function createRisk(data: any) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  return db.insert(risks).values({
-    postId,
-    title,
-    description,
-    probability: "medium",
-    impact: "medium",
-    status: "identified",
-  });
+  return db.insert(risks).values(data);
 }
 
-export async function updateRisk(riskId: number, data: Partial<typeof risks.$inferInsert>) {
+export async function updateRisk(riskId: number, data: any) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   return db.update(risks).set(data).where(eq(risks.id, riskId));
+}
+
+export async function deleteRisk(riskId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.delete(risks).where(eq(risks.id, riskId));
 }
 
 // ============ ALERTES ============
@@ -291,33 +290,63 @@ export async function getAlertsByStudyId(studyId: number) {
   return db.select().from(alerts).where(eq(alerts.studyId, studyId)).orderBy(desc(alerts.createdAt));
 }
 
-export async function createAlert(
-  studyId: number,
-  title: string,
-  message: string,
-  severity: "info" | "warning" | "critical",
-  relatedEntityType: "option" | "post" | "action",
-  relatedEntityId: number,
-  thresholdId?: number
-) {
+export async function createAlert(data: any) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  return db.insert(alerts).values({
-    studyId,
-    title,
-    message,
-    severity,
-    relatedEntityType,
-    relatedEntityId,
-    thresholdId,
-    isRead: false,
-  });
+  return db.insert(alerts).values(data);
 }
 
 export async function markAlertAsRead(alertId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   return db.update(alerts).set({ isRead: true }).where(eq(alerts.id, alertId));
+}
+
+export async function deleteAlert(alertId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.delete(alerts).where(eq(alerts.id, alertId));
+}
+
+// ============ SEUILS D'ALERTES ============
+
+export async function getAlertThresholdsByStudyId(studyId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(alertThresholds).where(eq(alertThresholds.studyId, studyId));
+}
+
+export async function createAlertThreshold(
+  studyId: number,
+  name: string,
+  type: "cost" | "delay" | "score" | "advancement",
+  operator: "<" | ">" | "<=" | ">=" | "=" | "!=",
+  threshold: number,
+  severity: "info" | "warning" | "critical"
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(alertThresholds).values({
+    studyId,
+    name,
+    type,
+    operator,
+    threshold: threshold.toString() as any,
+    severity,
+    isActive: true,
+  });
+}
+
+export async function updateAlertThresholdFn(thresholdId: number, data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(alertThresholds).set(data).where(eq(alertThresholds.id, thresholdId));
+}
+
+export async function deleteAlertThresholdFn(thresholdId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.delete(alertThresholds).where(eq(alertThresholds.id, thresholdId));
 }
 
 // ============ RÈGLES DE STATUT ============
@@ -354,33 +383,10 @@ export async function updateStatusRule(ruleId: number, data: Partial<typeof stat
   return db.update(statusRules).set(data).where(eq(statusRules.id, ruleId));
 }
 
-// ============ SEUILS D'ALERTES ============
-
-export async function getAlertThresholdsByStudyId(studyId: number) {
-  const db = await getDb();
-  if (!db) return [];
-  return db.select().from(alertThresholds).where(eq(alertThresholds.studyId, studyId));
-}
-
-export async function createAlertThreshold(
-  studyId: number,
-  name: string,
-  type: "cost" | "delay" | "score" | "advancement",
-  operator: "<" | ">" | "<=" | ">=" | "=" | "!=",
-  threshold: number,
-  severity: "info" | "warning" | "critical"
-) {
+export async function deleteStatusRule(ruleId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  return db.insert(alertThresholds).values({
-    studyId,
-    name,
-    type,
-    operator,
-    threshold: threshold.toString(),
-    severity,
-    isActive: true,
-  });
+  return db.delete(statusRules).where(eq(statusRules.id, ruleId));
 }
 
 // ============ CRITÈRES D'ÉVALUATION ============
@@ -398,7 +404,7 @@ export async function createEvaluationCriteria(studyId: number, name: string, we
     studyId,
     name,
     description,
-    weight: weight.toString(),
+    weight: weight.toString() as any,
     order: 0,
   });
 }
