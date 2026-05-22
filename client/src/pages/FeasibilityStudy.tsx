@@ -13,6 +13,7 @@ import TimelineView from '@/components/TimelineView';
 import MatrixView from '@/components/MatrixView';
 import DashboardView from '@/components/DashboardView';
 import RisksView from '@/components/RisksView';
+import GlobalView from '@/pages/GlobalView';
 
 interface Study {
   id: number;
@@ -189,8 +190,11 @@ export default function FeasibilityStudy() {
 
         {/* Main Content with Tabs */}
         {currentStudy && (
-          <Tabs defaultValue="tree" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 bg-card border border-accent/30 p-1 rounded-lg mb-6">
+          <Tabs defaultValue="global" className="w-full">
+            <TabsList className="grid w-full grid-cols-7 bg-card border border-accent/30 p-1 rounded-lg mb-6">
+              <TabsTrigger value="global" className="data-[state=active]:bg-accent/20 data-[state=active]:text-accent">
+                Vue Globale
+              </TabsTrigger>
               <TabsTrigger value="tree" className="data-[state=active]:bg-accent/20 data-[state=active]:text-accent">
                 Arborescence
               </TabsTrigger>
@@ -210,6 +214,10 @@ export default function FeasibilityStudy() {
                 Paramètres
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="global" className="space-y-4">
+              <GlobalView studyId={currentStudy.id} />
+            </TabsContent>
 
             <TabsContent value="tree" className="space-y-4">
               <TreeView studyId={currentStudy.id} />

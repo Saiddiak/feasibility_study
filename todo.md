@@ -119,3 +119,16 @@ L'application d'étude de faisabilité est complète et prête à être utilisé
 - Collaboration en temps réel (WebSockets)
 - Mobile app (React Native)
 - Notifications email pour les alertes
+
+
+## Vue Globale Complète (Nouvelle demande)
+- [ ] Créer la page GlobalView avec layout complet
+- [ ] Intégrer l'arborescence interactive (Options → Postes → Actions)
+- [ ] Ajouter la synthèse des options à droite
+- [ ] Ajouter les critères d'évaluation
+- [ ] Ajouter les alertes automatiques
+- [ ] Ajouter les règles automatiques actives
+- [ ] Intégrer la chronologie globale en bas
+- [ ] Ajouter la décision finale
+- [ ] Synchroniser les données en temps réel
+- [ ] Tester la performance avec beaucoup de données
