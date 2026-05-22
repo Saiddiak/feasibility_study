@@ -15,6 +15,7 @@ import DashboardView from '@/components/DashboardView';
 import RisksView from '@/components/RisksView';
 import GlobalView from '@/pages/GlobalView';
 import GlobalViewDemo from '@/pages/GlobalViewDemo';
+import GlobalViewComplete from '@/pages/GlobalViewComplete';
 
 interface Study {
   id: number;
@@ -66,7 +67,7 @@ export default function FeasibilityStudy() {
   if (!currentStudy && studies.length === 0) {
     return (
       <>
-        <GlobalViewDemo />
+        <GlobalViewComplete />
         <div className="min-h-screen blueprint-grid bg-background flex flex-col items-center justify-center p-4 hidden">
           <div className="blueprint-container max-w-md w-full text-center">
             <h1 className="blueprint-title mb-4">Étude de Faisabilité</h1>

@@ -8,9 +8,11 @@ import { scoringRouter } from "./scoring.router";
 import { calculationsRouter } from "./calculations.router";
 import { exportRouter } from "./export.router";
 import { aiRouter } from "./ai.router";
+import { demoDataRouter } from "./demo-data.router";
 
 export const appRouter = router({
   system: systemRouter,
+  demo: demoDataRouter,
   scoring: scoringRouter,
   calculations: calculationsRouter,
   export: exportRouter,
