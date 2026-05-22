@@ -1,31 +1,54 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { useLocation } from "wouter";
 import { getLoginUrl } from "@/const";
-import { Streamdown } from 'streamdown';
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
 export default function Home() {
-  // The userAuth hooks provides authentication state
-  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
+  const [, navigate] = useLocation();
 
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+  if (loading) {
+    return (
+      <div className="min-h-screen blueprint-grid bg-background flex items-center justify-center">
+        <div className="blueprint-container text-center">
+          <div className="animate-spin inline-block">
+            <div className="w-8 h-8 border-4 border-accent/30 border-t-accent rounded-full"></div>
+          </div>
+          <p className="text-muted-foreground mt-4">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen blueprint-grid bg-background flex items-center justify-center p-4">
+        <div className="blueprint-container max-w-md w-full text-center">
+          <h1 className="blueprint-title mb-4 text-3xl">Étude de Faisabilité</h1>
+          <p className="text-muted-foreground mb-6">Outil professionnel d'analyse et de comparaison d'options</p>
+          <p className="text-sm text-muted-foreground mb-8">Connectez-vous pour commencer votre étude de faisabilité</p>
+          <a href={getLoginUrl()}>
+            <Button className="blueprint-button w-full">
+              Se connecter
+            </Button>
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
+    <div className="min-h-screen blueprint-grid bg-background flex items-center justify-center p-4">
+      <div className="blueprint-container max-w-md w-full text-center">
+        <h1 className="blueprint-title mb-4 text-3xl">Bienvenue, {user?.name || 'Utilisateur'}</h1>
+        <p className="text-muted-foreground mb-8">Commencez votre étude de faisabilité</p>
+        <Button
+          onClick={() => navigate('/study')}
+          className="blueprint-button w-full"
+        >
+          Accéder à l'outil
+        </Button>
+      </div>
     </div>
   );
 }
