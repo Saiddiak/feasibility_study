@@ -1,0 +1,80 @@
+graph TB
+    subgraph Frontend["🖥️ FRONTEND - React 19"]
+        Pages["📄 Pages<br/>Home<br/>FeasibilityStudy<br/>GlobalViewComplete<br/>SettingsPage<br/>AIAnalysisPage<br/>ExportPage"]
+        Components["🧩 Composants<br/>TreeView<br/>TimelineView<br/>MatrixView<br/>DashboardView<br/>RisksView"]
+        Contexts["🎨 Contextes<br/>ThemeContext<br/>LanguageContext"]
+        tRPCClient["🔌 tRPC Client<br/>useQuery<br/>useMutation"]
+        
+        Pages --> Components
+        Components --> Contexts
+        Components --> tRPCClient
+    end
+    
+    subgraph Backend["⚙️ BACKEND - Express + tRPC"]
+        Server["🖧 Express Server<br/>http://localhost:3000"]
+        Routers["📡 tRPC Routers<br/>auth.* | studies.*<br/>options.* | posts.*<br/>actions.* | risks.*<br/>scoring.* | export.*<br/>ai.* | demo.*"]
+        Services["🔧 Services<br/>db.ts - DB Helpers<br/>scoring.ts - Calculs<br/>export.service.ts<br/>ai.service.ts"]
+        Auth["🔐 Authentification<br/>Manus OAuth<br/>Session Management"]
+        
+        Server --> Routers
+        Routers --> Services
+        Routers --> Auth
+    end
+    
+    subgraph Database["💾 BASE DE DONNÉES - MySQL"]
+        Tables["📊 Tables<br/>users | studies<br/>options | posts<br/>actions | action_dependencies<br/>risks | alerts<br/>status_rules | alert_thresholds<br/>evaluation_criteria | ai_analyses"]
+        ORM["🗂️ Drizzle ORM<br/>SELECT/INSERT<br/>UPDATE/DELETE"]
+        
+        ORM --> Tables
+    end
+    
+    subgraph Technologies["🛠️ TECHNOLOGIES"]
+        FrontendTech["Frontend:<br/>React 19<br/>Tailwind CSS 4<br/>tRPC Client<br/>Recharts<br/>Wouter"]
+        BackendTech["Backend:<br/>Express 4<br/>tRPC 11<br/>TypeScript<br/>Drizzle ORM"]
+        DBTech["Base de données:<br/>MySQL<br/>Drizzle Kit"]
+    end
+    
+    tRPCClient -->|HTTP/tRPC<br/>/api/trpc/*<br/>JSON| Server
+    Services -->|SQL Queries| ORM
+    ORM -->|Résultats| Services
+    Services -->|Réponse JSON| tRPCClient
+    
+    subgraph Example["📊 EXEMPLE: Créer une Option"]
+        E1["1️⃣ Utilisateur clique<br/>'Ajouter Option'"]
+        E2["2️⃣ Frontend appelle<br/>trpc.options.create"]
+        E3["3️⃣ Backend reçoit<br/>requête HTTP"]
+        E4["4️⃣ Exécute<br/>options.create"]
+        E5["5️⃣ Valide les données"]
+        E6["6️⃣ Insère dans BD<br/>INSERT INTO options"]
+        E7["7️⃣ BD retourne ID"]
+        E8["8️⃣ Backend retourne<br/>résultat"]
+        E9["9️⃣ Frontend met à jour<br/>l'affichage"]
+        
+        E1 --> E2
+        E2 --> E3
+        E3 --> E4
+        E4 --> E5
+        E5 --> E6
+        E6 --> E7
+        E7 --> E8
+        E8 --> E9
+    end
+    
+    style Frontend fill:#1e3a8a,stroke:#60a5fa,stroke-width:3px,color:#fff
+    style Backend fill:#7c2d12,stroke:#ea580c,stroke-width:3px,color:#fff
+    style Database fill:#1f2937,stroke:#10b981,stroke-width:3px,color:#fff
+    style Technologies fill:#f3f4f6,stroke:#6b7280,color:#000
+    style Example fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#000
+    
+    style Pages fill:#1e40af,color:#fff
+    style Components fill:#1e40af,color:#fff
+    style Contexts fill:#1e40af,color:#fff
+    style tRPCClient fill:#0f766e,color:#fff
+    
+    style Server fill:#92400e,color:#fff
+    style Routers fill:#92400e,color:#fff
+    style Services fill:#92400e,color:#fff
+    style Auth fill:#92400e,color:#fff
+    
+    style Tables fill:#374151,color:#fff
+    style ORM fill:#4b5563,color:#fff

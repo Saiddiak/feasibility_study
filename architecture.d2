@@ -1,0 +1,234 @@
+direction: right
+
+# Définir les styles
+vars: {
+  d2-config: {
+    theme-id: 1
+    dark-theme-id: 1
+  }
+}
+
+# FRONTEND
+Frontend: {
+  label: "🖥️ FRONTEND (React 19)"
+  shape: box
+  style: {
+    fill: "#1e3a8a"
+    stroke: "#60a5fa"
+    stroke-width: 3
+  }
+  
+  Pages: {
+    label: "Pages"
+    style: {
+      fill: "#1e40af"
+    }
+    Home
+    FeasibilityStudy
+    GlobalViewComplete
+    SettingsPage
+    AIAnalysisPage
+    ExportPage
+  }
+  
+  Components: {
+    label: "Composants"
+    style: {
+      fill: "#1e40af"
+    }
+    TreeView
+    TimelineView
+    MatrixView
+    DashboardView
+    RisksView
+  }
+  
+  Contexts: {
+    label: "Contextes"
+    style: {
+      fill: "#1e40af"
+    }
+    ThemeContext
+    LanguageContext
+  }
+  
+  tRPCClient: {
+    label: "tRPC Client"
+    style: {
+      fill: "#0f766e"
+    }
+  }
+}
+
+# BACKEND
+Backend: {
+  label: "⚙️ BACKEND (Express + tRPC)"
+  shape: box
+  style: {
+    fill: "#7c2d12"
+    stroke: "#ea580c"
+    stroke-width: 3
+  }
+  
+  Server: {
+    label: "Express Server"
+    style: {
+      fill: "#92400e"
+    }
+  }
+  
+  Routers: {
+    label: "tRPC Routers"
+    style: {
+      fill: "#92400e"
+    }
+    AuthRouter: "auth.*"
+    StudiesRouter: "studies.*"
+    OptionsRouter: "options.*"
+    PostsRouter: "posts.*"
+    ActionsRouter: "actions.*"
+    RisksRouter: "risks.*"
+    ScoringRouter: "scoring.*"
+    ExportRouter: "export.*"
+    AIRouter: "ai.*"
+    DemoRouter: "demo.*"
+  }
+  
+  Services: {
+    label: "Services"
+    style: {
+      fill: "#92400e"
+    }
+    DBHelpers: "db.ts"
+    ScoringLogic: "scoring.ts"
+    ExportService: "export.service.ts"
+    AIService: "ai.service.ts"
+  }
+  
+  Auth: {
+    label: "Authentification"
+    style: {
+      fill: "#92400e"
+    }
+    MausOAuth: "Manus OAuth"
+    SessionManagement: "Sessions"
+  }
+}
+
+# DATABASE
+Database: {
+  label: "💾 BASE DE DONNÉES (MySQL)"
+  shape: box
+  style: {
+    fill: "#1f2937"
+    stroke: "#10b981"
+    stroke-width: 3
+  }
+  
+  Tables: {
+    label: "Tables"
+    style: {
+      fill: "#374151"
+    }
+    Users: "users"
+    Studies: "studies"
+    Options: "options"
+    Posts: "posts"
+    Actions: "actions"
+    ActionDeps: "action_dependencies"
+    Risks: "risks"
+    Alerts: "alerts"
+    StatusRules: "status_rules"
+    AlertThresholds: "alert_thresholds"
+    EvalCriteria: "evaluation_criteria"
+    AIAnalyses: "ai_analyses"
+  }
+  
+  Connection: {
+    label: "Drizzle ORM"
+    style: {
+      fill: "#4b5563"
+    }
+  }
+}
+
+# CONNEXIONS PRINCIPALES
+Frontend.tRPCClient -> Backend.Server: "HTTP/tRPC\n/api/trpc/*\nJSON"
+Backend.Server -> Backend.Routers: "Route vers\nprocédures"
+Backend.Routers -> Backend.Services: "Exécute\nlogique métier"
+Backend.Services -> Database.Connection: "SQL Queries\nDrizzle ORM"
+Database.Connection -> Database.Tables: "SELECT/INSERT\nUPDATE/DELETE"
+
+# FLUX DÉTAILLÉ
+Frontend.Pages -> Frontend.Components: "Affiche"
+Frontend.Components -> Frontend.tRPCClient: "Appelle"
+Backend.Server -> Backend.Auth: "Valide\nOAuth"
+Backend.Services -> Backend.Routers: "Retourne\nrésultats"
+Database.Tables -> Database.Connection: "Retourne\ndonnées"
+
+# LABELS POUR LES CONNEXIONS
+Frontend.tRPCClient -> Backend.Routers: "1. Requête"
+Backend.Routers -> Database.Connection: "2. Query"
+Database.Connection -> Backend.Routers: "3. Résultat"
+Backend.Routers -> Frontend.tRPCClient: "4. Réponse"
+
+# EXEMPLE DE FLUX
+ExampleFlow: {
+  label: "📊 EXEMPLE: Créer une Option"
+  style: {
+    fill: "#fef3c7"
+    stroke: "#f59e0b"
+    stroke-width: 2
+  }
+  
+  Step1: "1️⃣ Utilisateur clique\n'Ajouter Option'"
+  Step2: "2️⃣ Frontend appelle\ntrpc.options.create()"
+  Step3: "3️⃣ Backend reçoit\nrequête HTTP"
+  Step4: "4️⃣ Exécute\noptions.create()"
+  Step5: "5️⃣ Valide les données"
+  Step6: "6️⃣ Insère dans BD\nINSERT INTO options"
+  Step7: "7️⃣ BD retourne ID"
+  Step8: "8️⃣ Backend retourne\nrésultat"
+  Step9: "9️⃣ Frontend met à jour\nl'affichage"
+  
+  Step1 -> Step2
+  Step2 -> Step3
+  Step3 -> Step4
+  Step4 -> Step5
+  Step5 -> Step6
+  Step6 -> Step7
+  Step7 -> Step8
+  Step8 -> Step9
+}
+
+# TECHNOLOGIES
+Tech: {
+  label: "🛠️ TECHNOLOGIES"
+  style: {
+    fill: "#f3f4f6"
+    stroke: "#6b7280"
+  }
+  
+  FrontendTech: {
+    label: "Frontend"
+    React: "React 19"
+    Tailwind: "Tailwind CSS 4"
+    tRPC: "tRPC Client"
+    Recharts: "Recharts"
+    Wouter: "Wouter (Routing)"
+  }
+  
+  BackendTech: {
+    label: "Backend"
+    Express: "Express 4"
+    tRPCServer: "tRPC 11"
+    TypeScript: "TypeScript"
+    Drizzle: "Drizzle ORM"
+  }
+  
+  DBTech: {
+    label: "Base de données"
+    MySQL: "MySQL"
+    DrizzleKit: "Drizzle Kit"
+  }
+}
