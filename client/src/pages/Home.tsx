@@ -1,11 +1,18 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
+import { useEffect } from "react";
 import { getLoginUrl } from "@/const";
 
 export default function Home() {
   const { user, isAuthenticated, loading } = useAuth();
   const [, navigate] = useLocation();
+
+  useEffect(() => {
+    if (isAuthenticated && user && !loading) {
+      navigate('/study');
+    }
+  }, [isAuthenticated, user, loading, navigate]);
 
   if (loading) {
     return (
@@ -37,17 +44,14 @@ export default function Home() {
     );
   }
 
+  // Si authentifié, afficher un écran de chargement pendant la redirection
   return (
-    <div className="min-h-screen blueprint-grid bg-background flex items-center justify-center p-4">
-      <div className="blueprint-container max-w-md w-full text-center">
-        <h1 className="blueprint-title mb-4 text-3xl">Bienvenue, {user?.name || 'Utilisateur'}</h1>
-        <p className="text-muted-foreground mb-8">Commencez votre étude de faisabilité</p>
-        <Button
-          onClick={() => navigate('/study')}
-          className="blueprint-button w-full"
-        >
-          Accéder à l'outil
-        </Button>
+    <div className="min-h-screen blueprint-grid bg-background flex items-center justify-center">
+      <div className="blueprint-container text-center">
+        <div className="animate-spin inline-block">
+          <div className="w-8 h-8 border-4 border-accent/30 border-t-accent rounded-full"></div>
+        </div>
+        <p className="text-muted-foreground mt-4">Redirection vers l'outil...</p>
       </div>
     </div>
   );
