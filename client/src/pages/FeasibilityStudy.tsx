@@ -16,6 +16,7 @@ import RisksView from '@/components/RisksView';
 import GlobalView from '@/pages/GlobalView';
 import GlobalViewDemo from '@/pages/GlobalViewDemo';
 import GlobalViewComplete from '@/pages/GlobalViewComplete';
+import GlobalViewInteractive from '@/pages/GlobalViewInteractive';
 
 interface Study {
   id: number;
@@ -221,7 +222,7 @@ export default function FeasibilityStudy() {
             </TabsList>
 
             <TabsContent value="global" className="space-y-4">
-              <GlobalView studyId={currentStudy.id} />
+              <GlobalViewInteractive studyId={currentStudy.id} />
             </TabsContent>
 
             <TabsContent value="tree" className="space-y-4">
