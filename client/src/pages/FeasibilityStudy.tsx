@@ -34,8 +34,10 @@ export default function FeasibilityStudy() {
   const [newStudyTitle, setNewStudyTitle] = useState('');
   const [newStudyDescription, setNewStudyDescription] = useState('');
 
+  // Only enable the query if user is authenticated
   const studiesQuery = trpc.studies.list.useQuery(undefined, {
     enabled: !!user,
+    retry: false,
   });
 
   const createStudyMutation = trpc.studies.create.useMutation({
@@ -65,59 +67,9 @@ export default function FeasibilityStudy() {
     }
   };
 
+  // Show GlobalViewComplete if no studies exist (first access)
   if (!currentStudy && studies.length === 0) {
-    return (
-      <>
-        <GlobalViewComplete />
-        <div className="min-h-screen blueprint-grid bg-background flex flex-col items-center justify-center p-4 hidden">
-          <div className="blueprint-container max-w-md w-full text-center">
-            <h1 className="blueprint-title mb-4">Étude de Faisabilité</h1>
-            <p className="text-muted-foreground mb-6">Créez votre première étude de faisabilité pour commencer</p>
-          
-          <Dialog open={showNewStudyDialog} onOpenChange={setShowNewStudyDialog}>
-            <DialogTrigger asChild>
-              <Button className="blueprint-button w-full">
-                <Plus className="w-4 h-4 mr-2" />
-                Nouvelle Étude
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-card border-accent/30">
-              <DialogHeader>
-                <DialogTitle className="text-accent">Nouvelle Étude de Faisabilité</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Titre</label>
-                  <Input
-                    placeholder="Ex: Étude de faisabilité - Projet X"
-                    value={newStudyTitle}
-                    onChange={(e) => setNewStudyTitle(e.target.value)}
-                    className="blueprint-input"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Description (optionnel)</label>
-                  <Input
-                    placeholder="Description de l'étude"
-                    value={newStudyDescription}
-                    onChange={(e) => setNewStudyDescription(e.target.value)}
-                    className="blueprint-input"
-                  />
-                </div>
-                <Button
-                  onClick={handleCreateStudy}
-                  disabled={!newStudyTitle.trim()}
-                  className="blueprint-button w-full"
-                >
-                  Créer l'étude
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
-      </>
-    );
+    return <GlobalViewComplete />;
   }
 
   return (
