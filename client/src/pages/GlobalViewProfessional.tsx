@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, Eye, Filter, Plus, LogOut, Settings, BarChart3, BookOpen, FolderOpen, CheckSquare, AlertTriangle, Bell, FileText, Shield } from 'lucide-react';
+import { ChevronDown, ChevronRight, Eye, Filter, Plus, LogOut, Settings, BarChart3, BookOpen, FolderOpen, CheckSquare, AlertTriangle, Bell, FileText, Shield, Sun, Moon } from 'lucide-react';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -93,15 +93,15 @@ const mockData: Option[] = [
   },
 ];
 
-const statusColors: Record<string, { bg: string; text: string; dot: string }> = {
-  favorable: { bg: 'bg-green-500/20', text: 'text-green-400', dot: 'bg-green-500' },
-  risk: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', dot: 'bg-yellow-500' },
-  blocked: { bg: 'bg-red-500/20', text: 'text-red-400', dot: 'bg-red-500' },
-  abandoned: { bg: 'bg-gray-500/20', text: 'text-gray-400', dot: 'bg-gray-500' },
-  in_progress: { bg: 'bg-blue-500/20', text: 'text-blue-400', dot: 'bg-blue-500' },
-  completed: { bg: 'bg-green-500/20', text: 'text-green-400', dot: 'bg-green-500' },
-  delayed: { bg: 'bg-red-500/20', text: 'text-red-400', dot: 'bg-red-500' },
-  pending: { bg: 'bg-gray-500/20', text: 'text-gray-400', dot: 'bg-gray-500' },
+const statusColors: Record<string, { bg: string; text: string; dot: string; border: string }> = {
+  favorable: { bg: '#10b981', text: '#10b981', dot: '#10b981', border: '#10b981' },
+  risk: { bg: '#f59e0b', text: '#f59e0b', dot: '#f59e0b', border: '#f59e0b' },
+  blocked: { bg: '#ef4444', text: '#ef4444', dot: '#ef4444', border: '#ef4444' },
+  abandoned: { bg: '#6b7280', text: '#6b7280', dot: '#6b7280', border: '#6b7280' },
+  in_progress: { bg: '#3b82f6', text: '#3b82f6', dot: '#3b82f6', border: '#3b82f6' },
+  completed: { bg: '#10b981', text: '#10b981', dot: '#10b981', border: '#10b981' },
+  delayed: { bg: '#ef4444', text: '#ef4444', dot: '#ef4444', border: '#ef4444' },
+  pending: { bg: '#6b7280', text: '#6b7280', dot: '#6b7280', border: '#6b7280' },
 };
 
 export default function GlobalViewProfessional() {
@@ -148,26 +148,23 @@ export default function GlobalViewProfessional() {
   const avgScore = Math.round(mockData.reduce((sum, opt) => sum + opt.score, 0) / mockData.length);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900" style={{
-      backgroundImage: `
-        linear-gradient(0deg, transparent 24%, rgba(79, 172, 254, 0.05) 25%, rgba(79, 172, 254, 0.05) 26%, transparent 27%, transparent 74%, rgba(79, 172, 254, 0.05) 75%, rgba(79, 172, 254, 0.05) 76%, transparent 77%, transparent),
-        linear-gradient(90deg, transparent 24%, rgba(79, 172, 254, 0.05) 25%, rgba(79, 172, 254, 0.05) 26%, transparent 27%, transparent 74%, rgba(79, 172, 254, 0.05) 75%, rgba(79, 172, 254, 0.05) 76%, transparent 77%, transparent)
-      `,
-      backgroundSize: '50px 50px',
-    }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#0f172a', backgroundImage: `
+      linear-gradient(0deg, transparent 24%, rgba(30, 58, 138, 0.08) 25%, rgba(30, 58, 138, 0.08) 26%, transparent 27%, transparent 74%, rgba(30, 58, 138, 0.08) 75%, rgba(30, 58, 138, 0.08) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(30, 58, 138, 0.08) 25%, rgba(30, 58, 138, 0.08) 26%, transparent 27%, transparent 74%, rgba(30, 58, 138, 0.08) 75%, rgba(30, 58, 138, 0.08) 76%, transparent 77%, transparent)
+    `, backgroundSize: '50px 50px' }}>
       <div className="flex h-screen">
         {/* Sidebar */}
-        <div className="w-64 bg-slate-950/80 border-r border-blue-500/20 flex flex-col">
+        <div className="w-56" style={{ backgroundColor: '#0f172a', borderRight: '1px solid rgba(30, 58, 138, 0.3)' }}>
           {/* Logo */}
-          <div className="p-4 border-b border-blue-500/20 flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-white" />
+          <div className="p-4" style={{ borderBottom: '1px solid rgba(30, 58, 138, 0.3)' }}>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded" style={{ backgroundColor: '#1e3a8a' }} />
+              <span className="font-bold text-white text-sm">Faisabilité</span>
             </div>
-            <span className="font-bold text-white">Faisabilité</span>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          <nav className="p-3 space-y-1 overflow-y-auto flex-1">
             {[
               { icon: BarChart3, label: 'Tableau de bord', active: true },
               { icon: BookOpen, label: 'Études' },
@@ -181,32 +178,32 @@ export default function GlobalViewProfessional() {
             ].map((item, i) => (
               <button
                 key={i}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  item.active
-                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-slate-800/50'
-                }`}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors"
+                style={{
+                  color: item.active ? '#60a5fa' : '#9ca3af',
+                  backgroundColor: item.active ? 'rgba(96, 165, 250, 0.1)' : 'transparent',
+                }}
               >
-                <item.icon className="w-5 h-5" />
-                <span className="text-sm">{item.label}</span>
+                <item.icon className="w-4 h-4" />
+                <span>{item.label}</span>
               </button>
             ))}
           </nav>
 
           {/* User */}
-          <div className="p-4 border-t border-blue-500/20 space-y-2">
-            <div className="flex items-center gap-2 px-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full" />
+          <div className="p-3" style={{ borderTop: '1px solid rgba(30, 58, 138, 0.3)' }}>
+            <div className="flex items-center gap-2 px-2 py-2 mb-2">
+              <div className="w-7 h-7 rounded-full" style={{ backgroundColor: '#3b82f6' }} />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{user?.name || 'Admin'}</p>
-                <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                <p className="text-xs font-medium text-white truncate">{user?.name || 'Admin'}</p>
+                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
               </div>
             </div>
             <button
               onClick={() => logout()}
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-red-400 transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-400 hover:text-red-400 transition-colors"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3 h-3" />
               Déconnexion
             </button>
           </div>
@@ -215,18 +212,18 @@ export default function GlobalViewProfessional() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="bg-slate-950/50 border-b border-blue-500/20 px-8 py-4 flex items-center justify-between">
+          <div className="px-6 py-4 flex items-center justify-between" style={{ backgroundColor: '#0f172a', borderBottom: '1px solid rgba(30, 58, 138, 0.3)' }}>
             <div>
-              <p className="text-sm text-gray-400">Étude de faisabilité</p>
-              <h1 className="text-2xl font-bold text-white">Vue globale</h1>
-              <p className="text-sm text-gray-400 mt-1">Synthèse complète de l'étude et de toutes les options</p>
+              <p className="text-xs text-gray-500">Étude de faisabilité</p>
+              <h1 className="text-xl font-bold text-white">Vue globale</h1>
+              <p className="text-xs text-gray-500 mt-1">Synthèse complète de l'étude et de toutes les options</p>
             </div>
             <div className="flex gap-2">
-              <button className="flex items-center gap-2 px-4 py-2 border border-blue-500/30 text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors">
+              <button className="flex items-center gap-2 px-3 py-2 text-sm border rounded" style={{ borderColor: 'rgba(96, 165, 250, 0.3)', color: '#60a5fa' }}>
                 <Filter className="w-4 h-4" />
                 Filtrer
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <button className="flex items-center gap-2 px-3 py-2 text-sm rounded text-white" style={{ backgroundColor: '#3b82f6' }}>
                 <Plus className="w-4 h-4" />
                 Ajouter
               </button>
@@ -234,63 +231,27 @@ export default function GlobalViewProfessional() {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="p-8 space-y-6">
+          <div className="flex-1 overflow-y-auto p-6">
+            <div className="space-y-6">
               {/* Stats Cards */}
-              <div className="grid grid-cols-6 gap-4">
-                <div className="bg-slate-800/50 border border-blue-500/20 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <FolderOpen className="w-5 h-5 text-blue-400" />
-                    <span className="text-2xl font-bold text-white">{totalOptions}</span>
+              <div className="grid grid-cols-6 gap-3">
+                {[
+                  { icon: FolderOpen, label: 'Options', value: totalOptions, color: '#3b82f6' },
+                  { icon: CheckSquare, label: 'Postes', value: totalPosts, color: '#3b82f6' },
+                  { icon: CheckSquare, label: 'Actions', value: totalActions, color: '#10b981' },
+                  { icon: AlertTriangle, label: 'Actions en retard', value: delayedActions, color: '#f59e0b' },
+                  { icon: Shield, label: 'Risques élevés', value: highRisks, color: '#ef4444' },
+                  { icon: Bell, label: 'Alertes', value: alerts, color: '#a78bfa' },
+                ].map((stat, i) => (
+                  <div key={i} className="rounded p-4" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', border: '1px solid rgba(30, 58, 138, 0.6)' }}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
+                      <span className="text-lg font-bold text-white">{stat.value}</span>
+                    </div>
+                    <p className="text-xs text-gray-400">{stat.label}</p>
+                    <p className="text-xs text-gray-600">Total des {stat.label.toLowerCase()}</p>
                   </div>
-                  <p className="text-sm text-gray-400">Options</p>
-                  <p className="text-xs text-gray-500">Total des options</p>
-                </div>
-
-                <div className="bg-slate-800/50 border border-blue-500/20 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <CheckSquare className="w-5 h-5 text-blue-400" />
-                    <span className="text-2xl font-bold text-white">{totalPosts}</span>
-                  </div>
-                  <p className="text-sm text-gray-400">Postes</p>
-                  <p className="text-xs text-gray-500">Tous les postes</p>
-                </div>
-
-                <div className="bg-slate-800/50 border border-green-500/20 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <CheckSquare className="w-5 h-5 text-green-400" />
-                    <span className="text-2xl font-bold text-white">{totalActions}</span>
-                  </div>
-                  <p className="text-sm text-gray-400">Actions</p>
-                  <p className="text-xs text-gray-500">Toutes les actions</p>
-                </div>
-
-                <div className="bg-slate-800/50 border border-orange-500/20 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <AlertTriangle className="w-5 h-5 text-orange-400" />
-                    <span className="text-2xl font-bold text-white">{delayedActions}</span>
-                  </div>
-                  <p className="text-sm text-gray-400">Actions en retard</p>
-                  <p className="text-xs text-gray-500">À traiter</p>
-                </div>
-
-                <div className="bg-slate-800/50 border border-red-500/20 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Shield className="w-5 h-5 text-red-400" />
-                    <span className="text-2xl font-bold text-white">{highRisks}</span>
-                  </div>
-                  <p className="text-sm text-gray-400">Risques élevés</p>
-                  <p className="text-xs text-gray-500">Impact / Probabilité</p>
-                </div>
-
-                <div className="bg-slate-800/50 border border-purple-500/20 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Bell className="w-5 h-5 text-purple-400" />
-                    <span className="text-2xl font-bold text-white">{alerts}</span>
-                  </div>
-                  <p className="text-sm text-gray-400">Alertes</p>
-                  <p className="text-xs text-gray-500">Actives</p>
-                </div>
+                ))}
               </div>
 
               {/* Main Grid */}
@@ -298,7 +259,7 @@ export default function GlobalViewProfessional() {
                 {/* Left: Tree and Legend */}
                 <div className="col-span-2 space-y-6">
                   {/* Legend */}
-                  <div className="bg-slate-800/50 border border-blue-500/20 rounded-lg p-4">
+                  <div className="rounded p-4" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', border: '1px solid rgba(30, 58, 138, 0.6)' }}>
                     <h3 className="text-sm font-semibold text-white mb-3">Légende des statuts</h3>
                     <div className="grid grid-cols-4 gap-3">
                       {[
@@ -312,7 +273,7 @@ export default function GlobalViewProfessional() {
                         { status: 'pending', label: 'À traiter' },
                       ].map((item) => (
                         <div key={item.status} className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${statusColors[item.status]?.dot}`} />
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[item.status]?.dot }} />
                           <span className="text-xs text-gray-400">{item.label}</span>
                         </div>
                       ))}
@@ -320,23 +281,24 @@ export default function GlobalViewProfessional() {
                   </div>
 
                   {/* Tree */}
-                  <div className="bg-slate-800/50 border border-blue-500/20 rounded-lg p-4">
+                  <div className="rounded p-4" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', border: '1px solid rgba(30, 58, 138, 0.6)' }}>
                     <h3 className="text-sm font-semibold text-white mb-4">Arborescence globale</h3>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       {mockData.map((option) => (
                         <div key={option.id}>
                           <button
                             onClick={() => toggleOption(option.id)}
-                            className="w-full flex items-center gap-2 px-3 py-2 hover:bg-slate-700/50 rounded transition-colors text-left"
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-sm transition-colors"
+                            style={{ color: '#e5e7eb', backgroundColor: expandedOptions.has(option.id) ? 'rgba(96, 165, 250, 0.1)' : 'transparent' }}
                           >
                             {expandedOptions.has(option.id) ? (
-                              <ChevronDown className="w-4 h-4 text-blue-400" />
+                              <ChevronDown className="w-4 h-4" style={{ color: '#60a5fa' }} />
                             ) : (
-                              <ChevronRight className="w-4 h-4 text-blue-400" />
+                              <ChevronRight className="w-4 h-4" style={{ color: '#60a5fa' }} />
                             )}
-                            <FolderOpen className="w-4 h-4 text-blue-400" />
-                            <span className="text-sm text-white flex-1">{option.name}</span>
-                            <span className={`text-xs px-2 py-1 rounded ${statusColors[option.status]?.bg} ${statusColors[option.status]?.text}`}>
+                            <FolderOpen className="w-4 h-4" style={{ color: '#60a5fa' }} />
+                            <span className="flex-1">{option.name}</span>
+                            <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: `${statusColors[option.status]?.bg}20`, color: statusColors[option.status]?.text }}>
                               {getStatusLabel(option.status)}
                             </span>
                             <span className="text-sm font-semibold text-white">{option.score} / 100</span>
@@ -348,16 +310,17 @@ export default function GlobalViewProfessional() {
                                 <div key={post.id}>
                                   <button
                                     onClick={() => togglePost(post.id)}
-                                    className="w-full flex items-center gap-2 px-3 py-2 hover:bg-slate-700/50 rounded transition-colors text-left"
+                                    className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-sm transition-colors"
+                                    style={{ color: '#d1d5db', backgroundColor: expandedPosts.has(post.id) ? 'rgba(96, 165, 250, 0.05)' : 'transparent' }}
                                   >
                                     {expandedPosts.has(post.id) ? (
-                                      <ChevronDown className="w-4 h-4 text-blue-300" />
+                                      <ChevronDown className="w-4 h-4" style={{ color: '#93c5fd' }} />
                                     ) : (
-                                      <ChevronRight className="w-4 h-4 text-blue-300" />
+                                      <ChevronRight className="w-4 h-4" style={{ color: '#93c5fd' }} />
                                     )}
-                                    <CheckSquare className="w-4 h-4 text-blue-300" />
-                                    <span className="text-sm text-gray-300 flex-1">{post.name}</span>
-                                    <span className={`text-xs px-2 py-1 rounded ${statusColors[post.status]?.bg} ${statusColors[post.status]?.text}`}>
+                                    <CheckSquare className="w-4 h-4" style={{ color: '#93c5fd' }} />
+                                    <span className="flex-1">{post.name}</span>
+                                    <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: `${statusColors[post.status]?.bg}20`, color: statusColors[post.status]?.text }}>
                                       {getStatusLabel(post.status)}
                                     </span>
                                     <span className="text-sm font-semibold text-white">{post.score} / 100</span>
@@ -366,10 +329,10 @@ export default function GlobalViewProfessional() {
                                   {expandedPosts.has(post.id) && (
                                     <div className="ml-6 space-y-1">
                                       {post.actions.map((action) => (
-                                        <div key={action.id} className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:bg-slate-700/50 rounded transition-colors">
-                                          <div className={`w-2 h-2 rounded-full ${statusColors[action.status]?.dot}`} />
+                                        <div key={action.id} className="flex items-center gap-2 px-3 py-2 text-sm rounded transition-colors" style={{ color: '#9ca3af', backgroundColor: 'rgba(96, 165, 250, 0.02)' }}>
+                                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[action.status]?.dot }} />
                                           <span className="flex-1">{action.name}</span>
-                                          <span className={`text-xs px-2 py-1 rounded ${statusColors[action.status]?.bg} ${statusColors[action.status]?.text}`}>
+                                          <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: `${statusColors[action.status]?.bg}20`, color: statusColors[action.status]?.text }}>
                                             {getStatusLabel(action.status)}
                                           </span>
                                           <span className="font-semibold text-white">{action.score} / 100</span>
@@ -390,12 +353,12 @@ export default function GlobalViewProfessional() {
                 {/* Right: Scores and Alerts */}
                 <div className="space-y-6">
                   {/* Score Summary */}
-                  <div className="bg-slate-800/50 border border-blue-500/20 rounded-lg p-4">
+                  <div className="rounded p-4" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', border: '1px solid rgba(30, 58, 138, 0.6)' }}>
                     <h3 className="text-sm font-semibold text-white mb-4">Synthèse des scores</h3>
                     <div className="flex justify-center mb-4">
                       <div className="relative w-32 h-32">
                         <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
-                          <circle cx="60" cy="60" r="50" fill="none" stroke="#1e293b" strokeWidth="8" />
+                          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(30, 58, 138, 0.5)" strokeWidth="8" />
                           <circle
                             cx="60"
                             cy="60"
@@ -420,54 +383,34 @@ export default function GlobalViewProfessional() {
                       </div>
                     </div>
                     <div className="space-y-2 text-sm">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-blue-400" />
-                          <span className="text-gray-400">Impact / Valeur</span>
+                      {[
+                        { label: 'Impact / Valeur', value: '40%', color: '#3b82f6' },
+                        { label: 'Faisabilité', value: '20%', color: '#10b981' },
+                        { label: 'Coût - Temps', value: '20%', color: '#f59e0b' },
+                        { label: 'Risque', value: '10%', color: '#ef4444' },
+                        { label: 'Réversibilité', value: '10%', color: '#a78bfa' },
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                            <span className="text-gray-400">{item.label}</span>
+                          </div>
+                          <span className="text-white font-semibold">{item.value}</span>
                         </div>
-                        <span className="text-white font-semibold">40%</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-green-400" />
-                          <span className="text-gray-400">Faisabilité</span>
-                        </div>
-                        <span className="text-white font-semibold">20%</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-yellow-400" />
-                          <span className="text-gray-400">Coût - Temps</span>
-                        </div>
-                        <span className="text-white font-semibold">20%</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-orange-400" />
-                          <span className="text-gray-400">Risque</span>
-                        </div>
-                        <span className="text-white font-semibold">10%</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-purple-400" />
-                          <span className="text-gray-400">Réversibilité</span>
-                        </div>
-                        <span className="text-white font-semibold">10%</span>
-                      </div>
+                      ))}
                     </div>
                   </div>
 
                   {/* Criteria */}
-                  <div className="bg-slate-800/50 border border-blue-500/20 rounded-lg p-4">
+                  <div className="rounded p-4" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', border: '1px solid rgba(30, 58, 138, 0.6)' }}>
                     <h3 className="text-sm font-semibold text-white mb-3">Critères d'évaluation</h3>
                     <div className="space-y-2 text-sm">
                       {[
-                        { icon: '📊', label: 'Impact / Valeur', value: '40%' },
-                        { icon: '✓', label: 'Faisabilité', value: '20%' },
-                        { icon: '⏱', label: 'Coût - Temps', value: '20%' },
-                        { icon: '⚠', label: 'Risque', value: '10%' },
-                        { icon: '↩', label: 'Réversibilité', value: '10%' },
+                        { label: 'Impact / Valeur', value: '40%' },
+                        { label: 'Faisabilité', value: '20%' },
+                        { label: 'Coût - Temps', value: '20%' },
+                        { label: 'Risque', value: '10%' },
+                        { label: 'Réversibilité', value: '10%' },
                       ].map((item, i) => (
                         <div key={i} className="flex items-center justify-between">
                           <span className="text-gray-400">{item.label}</span>
@@ -478,80 +421,58 @@ export default function GlobalViewProfessional() {
                   </div>
 
                   {/* Active Alerts */}
-                  <div className="bg-slate-800/50 border border-blue-500/20 rounded-lg p-4">
+                  <div className="rounded p-4" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', border: '1px solid rgba(30, 58, 138, 0.6)' }}>
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-sm font-semibold text-white">Alertes actives</h3>
-                      <a href="#" className="text-xs text-blue-400 hover:text-blue-300">Voir tout</a>
+                      <a href="#" className="text-xs" style={{ color: '#60a5fa' }}>Voir tout</a>
                     </div>
                     <div className="space-y-2 text-sm">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-red-500" />
-                          <span className="text-gray-400">Actions en retard</span>
+                      {[
+                        { label: 'Actions en retard', value: '5', color: '#ef4444' },
+                        { label: 'Risques élevés', value: '3', color: '#ef4444' },
+                        { label: 'Postes à revoir', value: '4', color: '#f59e0b' },
+                        { label: 'Décisions en attente', value: '2', color: '#3b82f6' },
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                            <span className="text-gray-400">{item.label}</span>
+                          </div>
+                          <span style={{ color: item.color }} className="font-semibold">{item.value}</span>
                         </div>
-                        <span className="text-red-400 font-semibold">5</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-red-500" />
-                          <span className="text-gray-400">Risques élevés</span>
-                        </div>
-                        <span className="text-red-400 font-semibold">3</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                          <span className="text-gray-400">Postes à revoir</span>
-                        </div>
-                        <span className="text-yellow-400 font-semibold">4</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-blue-500" />
-                          <span className="text-gray-400">Décisions en attente</span>
-                        </div>
-                        <span className="text-blue-400 font-semibold">2</span>
-                      </div>
+                      ))}
                     </div>
                   </div>
 
                   {/* Automatic Rules */}
-                  <div className="bg-slate-800/50 border border-blue-500/20 rounded-lg p-4">
+                  <div className="rounded p-4" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', border: '1px solid rgba(30, 58, 138, 0.6)' }}>
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-sm font-semibold text-white">Règles automatiques</h3>
-                      <a href="#" className="text-xs text-blue-400 hover:text-blue-300">Voir tout</a>
+                      <a href="#" className="text-xs" style={{ color: '#60a5fa' }}>Voir tout</a>
                     </div>
                     <div className="space-y-2 text-sm">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-green-500" />
-                          <span className="text-gray-400">Règle de score global</span>
+                      {[
+                        { label: 'Règle de score global', color: '#10b981' },
+                        { label: 'Règle de risque', color: '#10b981' },
+                        { label: 'Règle de délai', color: '#10b981' },
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                            <span className="text-gray-400">{item.label}</span>
+                          </div>
+                          <span style={{ color: item.color }} className="font-semibold">Actif</span>
                         </div>
-                        <span className="text-green-400 font-semibold">Actif</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-green-500" />
-                          <span className="text-gray-400">Règle de risque</span>
-                        </div>
-                        <span className="text-green-400 font-semibold">Actif</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-green-500" />
-                          <span className="text-gray-400">Règle de délai</span>
-                        </div>
-                        <span className="text-green-400 font-semibold">Actif</span>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Timeline */}
-              <div className="bg-slate-800/50 border border-blue-500/20 rounded-lg p-4">
+              <div className="rounded p-4" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', border: '1px solid rgba(30, 58, 138, 0.6)' }}>
                 <h3 className="text-sm font-semibold text-white mb-4">Chronologie globale</h3>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between px-4">
                   {[
                     { label: 'Création de l\'étude', date: '07/04/2024', completed: true },
                     { label: 'Ajout des options', date: '05/04/2024', completed: true },
@@ -560,18 +481,18 @@ export default function GlobalViewProfessional() {
                     { label: 'Dernière action', date: '20/05/2024', completed: true },
                   ].map((item, i) => (
                     <div key={i} className="flex flex-col items-center flex-1">
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mb-2 ${item.completed ? 'bg-blue-500 border-blue-500' : 'border-gray-500'}`}>
+                      <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center mb-2" style={{ backgroundColor: item.completed ? '#3b82f6' : 'transparent', borderColor: item.completed ? '#3b82f6' : '#4b5563' }}>
                         {item.completed && <div className="w-2 h-2 bg-white rounded-full" />}
                       </div>
                       <p className="text-xs text-gray-400 text-center">{item.label}</p>
-                      <p className="text-xs text-gray-500">{item.date}</p>
+                      <p className="text-xs text-gray-600">{item.date}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="text-xs text-gray-500 border-t border-blue-500/20 pt-4">
+              <div className="text-xs text-gray-600 border-t" style={{ borderColor: 'rgba(30, 58, 138, 0.3)', paddingTop: '1rem' }}>
                 Étude ID : #1234 • Créée le 07/04/2024 par Admin • Dernière mise à jour : 20/05/2024 à 14:30
               </div>
             </div>
