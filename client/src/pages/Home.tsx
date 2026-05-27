@@ -1,18 +1,17 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "wouter";
 import { useEffect } from "react";
 import { getLoginUrl } from "@/const";
 
 export default function Home() {
   const { user, isAuthenticated, loading } = useAuth();
-  const [, navigate] = useLocation();
 
   useEffect(() => {
     if (isAuthenticated && user && !loading) {
-      navigate('/study');
+      // Use window.location.href for reliable navigation
+      window.location.href = '/study';
     }
-  }, [isAuthenticated, user, loading, navigate]);
+  }, [isAuthenticated, user, loading]);
 
   if (loading) {
     return (
