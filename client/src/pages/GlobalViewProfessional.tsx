@@ -102,12 +102,6 @@ const statusColors: Record<string, { bg: string; text: string }> = {
   pending: { bg: 'rgba(107, 114, 128, 0.08)', text: '#9CA3AF' },
 };
 
-const Card = ({ children, className = '', style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) => (
-  <div className={`rounded-xl border border-slate-700/60 bg-slate-900/70 shadow-lg p-5 ${className}`} style={style}>
-    {children}
-  </div>
-);
-
 export default function GlobalViewProfessional() {
   const [expandedOptions, setExpandedOptions] = useState<Set<number>>(new Set([1, 2]));
   const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set([1, 3, 4]));
@@ -229,10 +223,10 @@ export default function GlobalViewProfessional() {
           </div>
         </div>
 
-        {/* Content */}
+        {/* Content - CLEAN LAYOUT WITH PROPER GAPS */}
         <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#0f172a' }}>
-          <main className="p-6 space-y-5">
-            {/* Stats Cards - 6 colonnes indépendantes */}
+          <div className="p-6 space-y-5" style={{ backgroundColor: '#020817' }}>
+            {/* KPI Cards - 6 colonnes avec gap-4 */}
             <div className="grid grid-cols-6 gap-4">
               {[
                 { icon: FolderOpen, label: 'Options', value: totalOptions, color: '#3B82F6' },
@@ -242,7 +236,7 @@ export default function GlobalViewProfessional() {
                 { icon: AlertTriangle, label: 'Risques élevés', value: highRisks, color: '#EF4444' },
                 { icon: Bell, label: 'Alertes', value: alerts, color: '#8B5CF6' },
               ].map((stat, i) => (
-                <Card key={i}>
+                <div key={i} className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0" style={{ background: `${stat.color}15` }}>
                       <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
@@ -251,16 +245,16 @@ export default function GlobalViewProfessional() {
                   </div>
                   <p className="text-xs font-medium text-gray-400">{stat.label}</p>
                   <p className="text-xs text-gray-600 mt-0.5">Total des {stat.label.toLowerCase()}</p>
-                </Card>
+                </div>
               ))}
             </div>
 
-            {/* Main Grid - 3 colonnes indépendantes */}
-            <div className="grid grid-cols-[280px_1fr_360px] gap-5">
-              {/* Left Column - 2 cards stacked */}
-              <div className="space-y-5">
+            {/* Main Grid - 3 colonnes avec gap-4 */}
+            <div className="grid grid-cols-[280px_1fr_360px] gap-4 items-start">
+              {/* Left Column - Légende + Meilleure option avec space-y-4 */}
+              <div className="space-y-4">
                 {/* Legend Card */}
-                <Card>
+                <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Légende des statuts</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {[
@@ -279,10 +273,10 @@ export default function GlobalViewProfessional() {
                       </div>
                     ))}
                   </div>
-                </Card>
+                </div>
 
                 {/* Best Option Card */}
-                <Card className="border-2" style={{ borderColor: '#22C55E', backgroundColor: 'rgba(34, 197, 94, 0.05)' }}>
+                <div className="rounded-2xl border-2 border-green-500/50 bg-slate-900/70 p-4 shadow-lg" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)' }}>
                   <div className="flex items-center gap-2 mb-4">
                     <Trophy className="w-4 h-4" style={{ color: '#F59E0B' }} />
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Meilleure option</h3>
@@ -297,11 +291,11 @@ export default function GlobalViewProfessional() {
                     <Eye className="w-3.5 h-3.5" />
                     Voir le détail
                   </button>
-                </Card>
+                </div>
               </div>
 
               {/* Center Column - Arborescence Card */}
-              <Card>
+              <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
                 <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Arborescence globale</h3>
                 <div className="space-y-0.5 max-h-96 overflow-y-auto pr-2">
                   {mockData.map((option) => (
@@ -366,12 +360,12 @@ export default function GlobalViewProfessional() {
                     </div>
                   ))}
                 </div>
-              </Card>
+              </div>
 
-              {/* Right Column - 4 cards stacked */}
-              <div className="space-y-5">
+              {/* Right Column - Synthèse + Critères + Alertes + Règles avec space-y-4 */}
+              <div className="space-y-4">
                 {/* Score Summary Card */}
-                <Card>
+                <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Synthèse des scores</h3>
                   <div className="flex justify-center mb-4">
                     <div className="relative w-24 h-24">
@@ -402,10 +396,10 @@ export default function GlobalViewProfessional() {
                       </div>
                     ))}
                   </div>
-                </Card>
+                </div>
 
                 {/* Criteria Card */}
-                <Card>
+                <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Critères d'évaluation</h3>
                   <div className="space-y-2 text-xs">
                     {[
@@ -421,10 +415,10 @@ export default function GlobalViewProfessional() {
                       </div>
                     ))}
                   </div>
-                </Card>
+                </div>
 
                 {/* Alerts Card */}
-                <Card>
+                <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Alertes actives</h3>
                     <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
@@ -445,10 +439,10 @@ export default function GlobalViewProfessional() {
                       </div>
                     ))}
                   </div>
-                </Card>
+                </div>
 
                 {/* Rules Card */}
-                <Card>
+                <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Règles automatiques</h3>
                     <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
@@ -468,12 +462,12 @@ export default function GlobalViewProfessional() {
                       </div>
                     ))}
                   </div>
-                </Card>
+                </div>
               </div>
             </div>
 
             {/* Timeline Card - Full Width */}
-            <Card>
+            <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
               <h3 className="text-xs font-bold text-white mb-6 uppercase tracking-wide">Chronologie globale</h3>
               <div className="flex items-start justify-between px-4 mb-6">
                 {[
@@ -498,13 +492,13 @@ export default function GlobalViewProfessional() {
                 <p className="text-base font-bold" style={{ color: '#22C55E' }}>19/06/2024</p>
                 <p className="text-xs text-gray-600 mt-1">(Dans 30 jours)</p>
               </div>
-            </Card>
+            </div>
 
             {/* Footer */}
             <div className="text-xs text-gray-600 pt-2" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.1)' }}>
               Étude ID : #1234 • Créée le 07/04/2024 par Admin • Dernière mise à jour : 20/05/2024 à 14:30
             </div>
-          </main>
+          </div>
         </div>
       </div>
     </div>
