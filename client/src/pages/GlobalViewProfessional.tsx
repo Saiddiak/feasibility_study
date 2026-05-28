@@ -225,7 +225,7 @@ export default function GlobalViewProfessional() {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#0f172a' }}>
-          <main className="p-6 space-y-4">
+          <main className="p-6 space-y-5" style={{ backgroundColor: '#020817' }}>
             {/* Stats Cards - 6 colonnes */}
             <div className="grid grid-cols-6 gap-4">
               {[
@@ -236,7 +236,7 @@ export default function GlobalViewProfessional() {
                 { icon: AlertTriangle, label: 'Risques élevés', value: highRisks, color: '#EF4444' },
                 { icon: Bell, label: 'Alertes', value: alerts, color: '#8B5CF6' },
               ].map((stat, i) => (
-                <div key={i} className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-4">
+                <div key={i} className="rounded-xl border border-slate-700/60 bg-slate-900/70 shadow-lg p-4">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style={{ background: `${stat.color}15` }}>
                       <stat.icon className="w-4.5 h-4.5" style={{ color: stat.color }} />
@@ -254,7 +254,7 @@ export default function GlobalViewProfessional() {
               {/* Left Column */}
               <div className="space-y-4">
                 {/* Legend */}
-                <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
+                <div className="rounded-xl border border-slate-700/60 bg-slate-900/70 shadow-lg p-4">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Légende des statuts</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {[
@@ -276,7 +276,7 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* Best Option */}
-                <div className="rounded-xl border-2 border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5" style={{ borderColor: '#22C55E' }}>
+                <div className="rounded-xl border-2 border-slate-700/60 bg-slate-900/70 shadow-lg p-4" style={{ borderColor: '#22C55E' }}>
                   <div className="flex items-center gap-2 mb-4">
                     <Trophy className="w-4 h-4" style={{ color: '#F59E0B' }} />
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Meilleure option</h3>
@@ -295,7 +295,7 @@ export default function GlobalViewProfessional() {
               </div>
 
               {/* Center Column - Arborescence */}
-              <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
+              <div className="rounded-xl border border-slate-700/60 bg-slate-900/70 shadow-lg p-4">
                 <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Arborescence globale</h3>
                 <div className="space-y-0.5 max-h-96 overflow-y-auto pr-2">
                   {mockData.map((option) => (
@@ -365,7 +365,7 @@ export default function GlobalViewProfessional() {
               {/* Right Column */}
               <div className="space-y-4">
                 {/* Score Summary */}
-                <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
+                <div className="rounded-xl border border-slate-700/60 bg-slate-900/70 shadow-lg p-4">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Synthèse des scores</h3>
                   <div className="flex justify-center mb-4">
                     <div className="relative w-24 h-24">
@@ -399,7 +399,7 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* Criteria */}
-                <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
+                <div className="rounded-xl border border-slate-700/60 bg-slate-900/70 shadow-lg p-4">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Critères d'évaluation</h3>
                   <div className="space-y-2 text-xs">
                     {[
@@ -418,7 +418,7 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* Alerts */}
-                <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
+                <div className="rounded-xl border border-slate-700/60 bg-slate-900/70 shadow-lg p-4">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Alertes actives</h3>
                     <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
@@ -442,7 +442,7 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* Rules */}
-                <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
+                <div className="rounded-xl border border-slate-700/60 bg-slate-900/70 shadow-lg p-4">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Règles automatiques</h3>
                     <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
@@ -467,7 +467,7 @@ export default function GlobalViewProfessional() {
             </div>
 
             {/* Timeline - Full Width */}
-            <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
+            <div className="rounded-xl border border-slate-700/60 bg-slate-900/70 shadow-lg p-4">
               <h3 className="text-xs font-bold text-white mb-6 uppercase tracking-wide">Chronologie globale</h3>
               <div className="flex items-start justify-between px-4 mb-6">
                 {[
