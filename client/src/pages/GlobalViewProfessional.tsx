@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, Eye, Filter, Plus, LogOut, Settings, BarChart3, BookOpen, FolderOpen, CheckSquare, AlertTriangle, Bell, FileText, Shield, Sun, Moon, Trophy } from 'lucide-react';
-import { useAuth } from '@/_core/hooks/useAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { ChevronDown, ChevronRight, Eye, Filter, Plus, BarChart3, BookOpen, FolderOpen, CheckSquare, AlertTriangle, Bell, FileText, Settings, Sun, Moon, Trophy } from 'lucide-react';
 
 interface Action {
   id: number;
@@ -93,19 +91,18 @@ const mockData: Option[] = [
   },
 ];
 
-const statusColors: Record<string, { bg: string; text: string; border: string }> = {
-  favorable: { bg: '#064e3b', text: '#10b981', border: '#10b981' },
-  risk: { bg: '#78350f', text: '#f59e0b', border: '#f59e0b' },
-  blocked: { bg: '#7f1d1d', text: '#ef4444', border: '#ef4444' },
-  abandoned: { bg: '#374151', text: '#9ca3af', border: '#9ca3af' },
-  in_progress: { bg: '#1e3a8a', text: '#3b82f6', border: '#3b82f6' },
-  completed: { bg: '#064e3b', text: '#10b981', border: '#10b981' },
-  delayed: { bg: '#7f1d1d', text: '#ef4444', border: '#ef4444' },
-  pending: { bg: '#374151', text: '#9ca3af', border: '#9ca3af' },
+const statusColors: Record<string, { bg: string; text: string; border: string; glow: string }> = {
+  favorable: { bg: 'rgba(34, 197, 94, 0.1)', text: '#22C55E', border: '#22C55E', glow: 'rgba(34, 197, 94, 0.2)' },
+  risk: { bg: 'rgba(245, 158, 11, 0.1)', text: '#F59E0B', border: '#F59E0B', glow: 'rgba(245, 158, 11, 0.2)' },
+  blocked: { bg: 'rgba(239, 68, 68, 0.1)', text: '#EF4444', border: '#EF4444', glow: 'rgba(239, 68, 68, 0.2)' },
+  abandoned: { bg: 'rgba(107, 114, 128, 0.1)', text: '#9CA3AF', border: '#9CA3AF', glow: 'rgba(107, 114, 128, 0.2)' },
+  in_progress: { bg: 'rgba(37, 99, 235, 0.1)', text: '#2563EB', border: '#2563EB', glow: 'rgba(37, 99, 235, 0.2)' },
+  completed: { bg: 'rgba(34, 197, 94, 0.1)', text: '#22C55E', border: '#22C55E', glow: 'rgba(34, 197, 94, 0.2)' },
+  delayed: { bg: 'rgba(239, 68, 68, 0.1)', text: '#EF4444', border: '#EF4444', glow: 'rgba(239, 68, 68, 0.2)' },
+  pending: { bg: 'rgba(107, 114, 128, 0.1)', text: '#9CA3AF', border: '#9CA3AF', glow: 'rgba(107, 114, 128, 0.2)' },
 };
 
 export default function GlobalViewProfessional() {
-  const { user, logout } = useAuth();
   const [expandedOptions, setExpandedOptions] = useState<Set<number>>(new Set([1, 2]));
   const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set([1, 3, 4]));
 
@@ -148,19 +145,105 @@ export default function GlobalViewProfessional() {
   const bestOption = mockData.reduce((best, opt) => opt.score > best.score ? opt : best);
 
   return (
-    <div className="min-h-screen flex" style={{ backgroundColor: '#0f172a' }}>
+    <div className="min-h-screen flex" style={{ backgroundColor: '#020817' }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+          font-family: 'Inter', sans-serif;
+        }
+
+        .glass-card {
+          background: rgba(15, 23, 42, 0.5);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(37, 99, 235, 0.1);
+          transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .glass-card:hover {
+          background: rgba(15, 23, 42, 0.7);
+          border-color: rgba(37, 99, 235, 0.2);
+          box-shadow: 0 8px 32px rgba(37, 99, 235, 0.1);
+        }
+
+        .stat-card {
+          background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(37, 99, 235, 0.15);
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .stat-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent);
+          pointer-events: none;
+        }
+
+        .stat-card:hover {
+          background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.08) 100%);
+          border-color: rgba(37, 99, 235, 0.3);
+          transform: translateY(-2px);
+          box-shadow: 0 12px 40px rgba(37, 99, 235, 0.15);
+        }
+
+        .fade-in {
+          animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .accordion-expand {
+          animation: expandAccordion 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes expandAccordion {
+          from {
+            opacity: 0;
+            max-height: 0;
+          }
+          to {
+            opacity: 1;
+            max-height: 500px;
+          }
+        }
+
+        .glow-text {
+          text-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .premium-border {
+          border-image: linear-gradient(135deg, rgba(37, 99, 235, 0.3), rgba(139, 92, 246, 0.1)) 1;
+        }
+      `}</style>
+
       {/* Sidebar */}
-      <div className="w-56 flex flex-col" style={{ backgroundColor: '#0f172a', borderRight: '1px solid rgba(59, 130, 246, 0.2)' }}>
+      <div className="w-56 flex flex-col flex-shrink-0" style={{ backgroundColor: '#0f172a', borderRight: '1px solid rgba(37, 99, 235, 0.1)' }}>
         {/* Logo */}
-        <div className="p-4 flex items-center gap-2" style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.2)' }}>
-          <div className="w-8 h-8 rounded flex items-center justify-center" style={{ backgroundColor: '#1e40af' }}>
-            <BarChart3 className="w-5 h-5 text-blue-400" />
+        <div className="p-6 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(37, 99, 235, 0.1)' }}>
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #2563EB, #1e40af)' }}>
+            <BarChart3 className="w-6 h-6 text-white" />
           </div>
-          <span className="font-bold text-white text-sm">Faisabilité</span>
+          <span className="font-bold text-white text-base">Faisabilité</span>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {[
             { icon: BarChart3, label: 'Tableau de bord', active: true },
             { icon: BookOpen, label: 'Études' },
@@ -174,54 +257,56 @@ export default function GlobalViewProfessional() {
           ].map((item, i) => (
             <button
               key={i}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300"
               style={{
-                color: item.active ? '#60a5fa' : '#9ca3af',
-                backgroundColor: item.active ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
+                color: item.active ? '#2563EB' : '#9CA3AF',
+                backgroundColor: item.active ? 'rgba(37, 99, 235, 0.15)' : 'transparent',
+                borderLeft: item.active ? '3px solid #2563EB' : 'none',
+                paddingLeft: item.active ? '13px' : '16px',
               }}
             >
-              <item.icon className="w-4 h-4" />
-              <span>{item.label}</span>
+              <item.icon className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">{item.label}</span>
             </button>
           ))}
         </nav>
 
-        {/* User */}
-        <div className="p-3 space-y-2" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.2)' }}>
-          <div className="flex items-center gap-2 px-2">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: '#3b82f6' }}>
+        {/* User Profile */}
+        <div className="p-4 space-y-4" style={{ borderTop: '1px solid rgba(37, 99, 235, 0.1)' }}>
+          <div className="flex items-center gap-3 px-2">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #2563EB, #1e40af)' }}>
               AD
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-white">Admin</p>
+              <p className="text-sm font-semibold text-white">Admin</p>
               <p className="text-xs text-gray-500">Administrateur</p>
             </div>
           </div>
-        </div>
 
-        {/* Theme Toggle */}
-        <div className="p-3 flex items-center justify-center gap-2" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.2)' }}>
-          <Sun className="w-4 h-4 text-gray-500" />
-          <button className="w-10 h-6 rounded-full" style={{ backgroundColor: '#3b82f6' }} />
-          <Moon className="w-4 h-4 text-gray-500" />
+          {/* Theme Toggle */}
+          <div className="flex items-center justify-center gap-3 px-2 py-2 rounded-lg" style={{ backgroundColor: 'rgba(37, 99, 235, 0.05)' }}>
+            <Sun className="w-4 h-4 text-gray-500" />
+            <button className="w-10 h-6 rounded-full transition-all" style={{ backgroundColor: '#2563EB' }} />
+            <Moon className="w-4 h-4 text-gray-500" />
+          </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="px-8 py-4 flex items-center justify-between" style={{ backgroundColor: '#0f172a', borderBottom: '1px solid rgba(59, 130, 246, 0.2)' }}>
+        <div className="px-8 py-6 flex items-center justify-between" style={{ backgroundColor: '#0f172a', borderBottom: '1px solid rgba(37, 99, 235, 0.1)' }}>
           <div>
-            <p className="text-xs text-gray-500">Étude de faisabilité</p>
-            <h1 className="text-2xl font-bold text-white">Vue globale</h1>
-            <p className="text-xs text-gray-500">Synthèse complète de l'étude et de toutes les options</p>
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Étude de faisabilité</p>
+            <h1 className="text-3xl font-bold text-white mt-1">Vue globale</h1>
+            <p className="text-sm text-gray-400 mt-1">Synthèse complète de l'étude et de toutes les options</p>
           </div>
-          <div className="flex gap-2">
-            <button className="flex items-center gap-2 px-4 py-2 text-sm rounded border" style={{ borderColor: 'rgba(96, 165, 250, 0.3)', color: '#60a5fa' }}>
+          <div className="flex gap-3">
+            <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all" style={{ color: '#2563EB', border: '1px solid rgba(37, 99, 235, 0.3)', backgroundColor: 'rgba(37, 99, 235, 0.05)' }}>
               <Filter className="w-4 h-4" />
               Filtrer
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 text-sm rounded text-white font-medium" style={{ backgroundColor: '#3b82f6' }}>
+            <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-lg text-white transition-all" style={{ background: 'linear-gradient(135deg, #2563EB, #1e40af)' }}>
               <Plus className="w-4 h-4" />
               Ajouter
             </button>
@@ -229,58 +314,43 @@ export default function GlobalViewProfessional() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-8" style={{ backgroundColor: '#0f172a', backgroundImage: `
-          linear-gradient(0deg, transparent 24%, rgba(59, 130, 246, 0.03) 25%, rgba(59, 130, 246, 0.03) 26%, transparent 27%, transparent 74%, rgba(59, 130, 246, 0.03) 75%, rgba(59, 130, 246, 0.03) 76%, transparent 77%, transparent),
-          linear-gradient(90deg, transparent 24%, rgba(59, 130, 246, 0.03) 25%, rgba(59, 130, 246, 0.03) 26%, transparent 27%, transparent 74%, rgba(59, 130, 246, 0.03) 75%, rgba(59, 130, 246, 0.03) 76%, transparent 77%, transparent)
-        `, backgroundSize: '50px 50px' }}>
-          <div className="space-y-6">
-            {/* Stats Cards - Grid Layout */}
+        <div className="flex-1 overflow-y-auto p-8" style={{ backgroundColor: '#020817' }}>
+          <div className="space-y-8 fade-in">
+            {/* Stats Cards */}
             <div className="grid grid-cols-6 gap-4">
               {[
-                { icon: FolderOpen, label: 'Options', value: totalOptions, color: '#3b82f6', bg: '#1e3a8a' },
-                { icon: CheckSquare, label: 'Postes', value: totalPosts, color: '#3b82f6', bg: '#1e3a8a' },
-                { icon: CheckSquare, label: 'Actions', value: totalActions, color: '#10b981', bg: '#064e3b' },
-                { icon: AlertTriangle, label: 'Actions en retard', value: delayedActions, color: '#f59e0b', bg: '#78350f' },
-                { icon: Shield, label: 'Risques élevés', value: highRisks, color: '#ef4444', bg: '#7f1d1d' },
-                { icon: Bell, label: 'Alertes', value: alerts, color: '#a78bfa', bg: '#4c1d95' },
+                { icon: FolderOpen, label: 'Options', value: totalOptions, color: '#2563EB' },
+                { icon: CheckSquare, label: 'Postes', value: totalPosts, color: '#2563EB' },
+                { icon: CheckSquare, label: 'Actions', value: totalActions, color: '#22C55E' },
+                { icon: AlertTriangle, label: 'Actions en retard', value: delayedActions, color: '#F59E0B' },
+                { icon: AlertTriangle, label: 'Risques élevés', value: highRisks, color: '#EF4444' },
+                { icon: Bell, label: 'Alertes', value: alerts, color: '#8B5CF6' },
               ].map((stat, i) => (
-                <div key={i} className="rounded p-4 border" style={{ backgroundColor: stat.bg, borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
-                    <span className="text-2xl font-bold text-white">{stat.value}</span>
+                <div key={i} className="stat-card rounded-xl p-4 relative group">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: `${stat.color}20` }}>
+                        <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-white">{stat.value}</p>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-xs text-gray-400">{stat.label}</p>
-                  <p className="text-xs text-gray-600">Total des {stat.label.toLowerCase()}</p>
+                  <p className="text-xs font-medium text-gray-400">{stat.label}</p>
+                  <p className="text-xs text-gray-600 mt-1">Total des {stat.label.toLowerCase()}</p>
                 </div>
               ))}
             </div>
 
-            {/* Main Layout: Left (Meilleure option + Légende) | Center (Arborescence) | Right (Synthèse + Alertes) */}
+            {/* Main Grid Layout */}
             <div className="grid grid-cols-4 gap-6">
-              {/* Left Column: Best Option + Legend */}
+              {/* Left Column: Legend + Best Option */}
               <div className="flex flex-col gap-6">
-                {/* Best Option */}
-                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: '#10b981' }}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Trophy className="w-5 h-5" style={{ color: '#f59e0b' }} />
-                    <h3 className="text-sm font-semibold text-white">Meilleure option</h3>
-                  </div>
-                  <p className="text-sm font-semibold text-green-400 mb-1">{bestOption.name.split(' - ')[1]}</p>
-                  <p className="text-xs text-green-400 mb-3">{getStatusLabel(bestOption.status)}</p>
-                  <p className="text-3xl font-bold mb-3">
-                    <span style={{ color: '#10b981' }}>{bestOption.score}</span>
-                    <span className="text-gray-400 text-sm"> / 100</span>
-                  </p>
-                  <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs rounded" style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa' }}>
-                    <Eye className="w-3 h-3" />
-                    Voir le détail
-                  </button>
-                </div>
-
                 {/* Legend */}
-                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                  <h3 className="text-sm font-semibold text-white mb-3">Légende des statuts</h3>
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="glass-card rounded-2xl p-6">
+                  <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Légende des statuts</h3>
+                  <div className="grid grid-cols-2 gap-3">
                     {[
                       { status: 'favorable', label: 'Favorable' },
                       { status: 'risk', label: 'Risque' },
@@ -291,75 +361,91 @@ export default function GlobalViewProfessional() {
                       { status: 'delayed', label: 'En retard' },
                       { status: 'pending', label: 'À traiter' },
                     ].map((item) => (
-                      <div key={item.status} className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[item.status]?.text }} />
-                        <span className="text-xs text-gray-400">{item.label}</span>
+                      <div key={item.status} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-white/5 transition-colors">
+                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[item.status]?.text }} />
+                        <span className="text-xs text-gray-300">{item.label}</span>
                       </div>
                     ))}
                   </div>
                 </div>
+
+                {/* Best Option */}
+                <div className="glass-card rounded-2xl p-6 border-2" style={{ borderColor: '#22C55E' }}>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Trophy className="w-5 h-5" style={{ color: '#F59E0B' }} />
+                    <h3 className="text-sm font-bold text-white uppercase tracking-wider">Meilleure option</h3>
+                  </div>
+                  <p className="text-sm font-semibold mb-1" style={{ color: '#22C55E' }}>{bestOption.name.split(' - ')[1]}</p>
+                  <p className="text-xs mb-4" style={{ color: '#22C55E' }}>{getStatusLabel(bestOption.status)}</p>
+                  <p className="text-4xl font-bold mb-6">
+                    <span style={{ color: '#22C55E' }}>{bestOption.score}</span>
+                    <span className="text-gray-500 text-lg"> / 100</span>
+                  </p>
+                  <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-lg transition-all" style={{ backgroundColor: 'rgba(37, 99, 235, 0.15)', color: '#2563EB', border: '1px solid rgba(37, 99, 235, 0.3)' }}>
+                    <Eye className="w-4 h-4" />
+                    Voir le détail
+                  </button>
+                </div>
               </div>
 
-              {/* Center Column: Arborescence (2 colonnes) */}
-              <div className="col-span-2 rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                <h3 className="text-sm font-semibold text-white mb-4">Arborescence globale</h3>
-                <div className="space-y-0 max-h-96 overflow-y-auto">
+              {/* Center Column: Arborescence */}
+              <div className="col-span-2 glass-card rounded-2xl p-6">
+                <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Arborescence globale</h3>
+                <div className="space-y-1 max-h-96 overflow-y-auto pr-2">
                   {mockData.map((option) => (
-                    <div key={option.id}>
+                    <div key={option.id} className="space-y-1">
                       {/* Option */}
                       <button
                         onClick={() => toggleOption(option.id)}
-                        className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-sm transition-colors hover:bg-opacity-50"
-                        style={{ color: '#e5e7eb' }}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm transition-all hover:bg-white/5"
                       >
                         {expandedOptions.has(option.id) ? (
-                          <ChevronDown className="w-4 h-4" style={{ color: '#60a5fa' }} />
+                          <ChevronDown className="w-4 h-4 flex-shrink-0" style={{ color: '#2563EB' }} />
                         ) : (
-                          <ChevronRight className="w-4 h-4" style={{ color: '#60a5fa' }} />
+                          <ChevronRight className="w-4 h-4 flex-shrink-0" style={{ color: '#2563EB' }} />
                         )}
-                        <FolderOpen className="w-4 h-4" style={{ color: '#60a5fa' }} />
-                        <span className="flex-1 truncate font-medium text-sm">{option.name}</span>
-                        <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
+                        <FolderOpen className="w-4 h-4 flex-shrink-0" style={{ color: '#2563EB' }} />
+                        <span className="flex-1 truncate font-medium text-white">{option.name}</span>
+                        <span className="text-xs px-2.5 py-1 rounded-md flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
                           {getStatusLabel(option.status)}
                         </span>
-                        <span className="text-sm font-bold text-white">{option.score} / 100</span>
+                        <span className="text-xs font-bold text-gray-300 flex-shrink-0">{option.score}/100</span>
                       </button>
 
                       {/* Posts */}
                       {expandedOptions.has(option.id) && (
-                        <div className="ml-4 space-y-0">
+                        <div className="ml-4 space-y-1 accordion-expand">
                           {option.posts.map((post) => (
-                            <div key={post.id}>
+                            <div key={post.id} className="space-y-1">
                               <button
                                 onClick={() => togglePost(post.id)}
-                                className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-sm transition-colors hover:bg-opacity-50"
-                                style={{ color: '#d1d5db' }}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm transition-all hover:bg-white/5"
                               >
                                 {expandedPosts.has(post.id) ? (
-                                  <ChevronDown className="w-4 h-4" style={{ color: '#93c5fd' }} />
+                                  <ChevronDown className="w-4 h-4 flex-shrink-0" style={{ color: '#93c5fd' }} />
                                 ) : (
-                                  <ChevronRight className="w-4 h-4" style={{ color: '#93c5fd' }} />
+                                  <ChevronRight className="w-4 h-4 flex-shrink-0" style={{ color: '#93c5fd' }} />
                                 )}
-                                <CheckSquare className="w-4 h-4" style={{ color: '#93c5fd' }} />
-                                <span className="flex-1 truncate text-sm">{post.name}</span>
-                                <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
+                                <CheckSquare className="w-4 h-4 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                                <span className="flex-1 truncate text-gray-200">{post.name}</span>
+                                <span className="text-xs px-2.5 py-1 rounded-md flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
                                   {getStatusLabel(post.status)}
                                 </span>
-                                <span className="text-sm font-bold text-white">{post.score} / 100</span>
+                                <span className="text-xs font-bold text-gray-300 flex-shrink-0">{post.score}/100</span>
                               </button>
 
                               {/* Actions */}
                               {expandedPosts.has(post.id) && (
-                                <div className="ml-4 space-y-0">
+                                <div className="ml-4 space-y-1 accordion-expand">
                                   {post.actions.map((action) => (
-                                    <div key={action.id} className="flex items-center gap-2 px-2 py-2 text-sm rounded transition-colors" style={{ color: '#9ca3af' }}>
-                                      <ChevronRight className="w-4 h-4 opacity-0" />
-                                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[action.status]?.text }} />
-                                      <span className="flex-1 truncate text-xs">{action.name}</span>
-                                      <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
+                                    <div key={action.id} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all hover:bg-white/5">
+                                      <ChevronRight className="w-4 h-4 opacity-0 flex-shrink-0" />
+                                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[action.status]?.text }} />
+                                      <span className="flex-1 truncate text-gray-400">{action.name}</span>
+                                      <span className="text-xs px-2.5 py-1 rounded-md flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
                                         {getStatusLabel(action.status)}
                                       </span>
-                                      <span className="text-xs font-bold text-white">{action.score} / 100</span>
+                                      <span className="text-xs font-bold text-gray-300 flex-shrink-0">{action.score}/100</span>
                                     </div>
                                   ))}
                                 </div>
@@ -373,46 +459,46 @@ export default function GlobalViewProfessional() {
                 </div>
               </div>
 
-              {/* Right Column: Synthèse + Alertes + Règles */}
-              <div className="flex flex-col gap-0">
+              {/* Right Column: Synthèse + Critères + Alertes */}
+              <div className="flex flex-col gap-6">
                 {/* Score Summary */}
-                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                  <h3 className="text-sm font-semibold text-white mb-4">Synthèse des scores</h3>
-                  <div className="flex justify-center mb-4">
+                <div className="glass-card rounded-2xl p-6">
+                  <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Synthèse des scores</h3>
+                  <div className="flex justify-center mb-6">
                     <div className="relative w-32 h-32">
                       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
-                        <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(59, 130, 246, 0.1)" strokeWidth="10" />
-                        <circle cx="60" cy="60" r="50" fill="none" stroke="#3b82f6" strokeWidth="10" strokeDasharray={`${(avgScore / 100) * 314} 314`} strokeLinecap="round" />
+                        <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(37, 99, 235, 0.1)" strokeWidth="8" />
+                        <circle cx="60" cy="60" r="50" fill="none" stroke="#2563EB" strokeWidth="8" strokeDasharray={`${(avgScore / 100) * 314} 314`} strokeLinecap="round" />
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <span className="text-3xl font-bold text-white">{avgScore}</span>
-                        <span className="text-xs text-gray-400">/100</span>
+                        <span className="text-xs text-gray-500">/100</span>
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-2.5 text-sm">
                     {[
-                      { label: 'Impact / Valeur', value: '40%', color: '#3b82f6' },
-                      { label: 'Faisabilité', value: '20%', color: '#10b981' },
-                      { label: 'Coût - Temps', value: '20%', color: '#f59e0b' },
-                      { label: 'Risque', value: '10%', color: '#ef4444' },
-                      { label: 'Réversibilité', value: '10%', color: '#a78bfa' },
+                      { label: 'Impact / Valeur', value: '40%', color: '#2563EB' },
+                      { label: 'Faisabilité', value: '20%', color: '#22C55E' },
+                      { label: 'Coût - Temps', value: '20%', color: '#F59E0B' },
+                      { label: 'Risque', value: '10%', color: '#EF4444' },
+                      { label: 'Réversibilité', value: '10%', color: '#8B5CF6' },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2.5">
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                          <span className="text-gray-400">{item.label}</span>
+                          <span className="text-gray-300">{item.label}</span>
                         </div>
-                        <span className="text-white font-semibold">{item.value}</span>
+                        <span className="font-semibold text-white">{item.value}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Criteria */}
-                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                  <h3 className="text-sm font-semibold text-white mb-3">Critères d'évaluation</h3>
-                  <div className="space-y-2 text-sm">
+                <div className="glass-card rounded-2xl p-6">
+                  <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Critères d'évaluation</h3>
+                  <div className="space-y-2.5 text-sm">
                     {[
                       { label: 'Impact / Valeur', value: '40%' },
                       { label: 'Faisabilité', value: '20%' },
@@ -420,56 +506,56 @@ export default function GlobalViewProfessional() {
                       { label: 'Risque', value: '10%' },
                       { label: 'Réversibilité', value: '10%' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <span className="text-gray-400">{item.label}</span>
-                        <span className="text-white font-semibold">{item.value}</span>
+                      <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
+                        <span className="text-gray-300">{item.label}</span>
+                        <span className="font-semibold text-white">{item.value}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Active Alerts */}
-                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-semibold text-white">Alertes actives</h3>
-                    <a href="#" className="text-xs" style={{ color: '#60a5fa' }}>Voir tout</a>
+                <div className="glass-card rounded-2xl p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-bold text-white uppercase tracking-wider">Alertes actives</h3>
+                    <a href="#" className="text-xs font-semibold transition-colors" style={{ color: '#2563EB' }}>Voir tout</a>
                   </div>
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-2.5 text-sm">
                     {[
-                      { label: 'Actions en retard', value: '5', color: '#ef4444' },
-                      { label: 'Risques élevés', value: '3', color: '#ef4444' },
-                      { label: 'Postes à revoir', value: '4', color: '#f59e0b' },
-                      { label: 'Décisions en attente', value: '2', color: '#3b82f6' },
+                      { label: 'Actions en retard', value: '5', color: '#EF4444' },
+                      { label: 'Risques élevés', value: '3', color: '#EF4444' },
+                      { label: 'Postes à revoir', value: '4', color: '#F59E0B' },
+                      { label: 'Décisions en attente', value: '2', color: '#2563EB' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                      <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
+                        <div className="flex items-center gap-2.5">
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                          <span className="text-gray-400">{item.label}</span>
+                          <span className="text-gray-300">{item.label}</span>
                         </div>
-                        <span style={{ color: item.color }} className="font-semibold">{item.value}</span>
+                        <span className="font-semibold" style={{ color: item.color }}>{item.value}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Automatic Rules */}
-                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-semibold text-white">Règles automatiques</h3>
-                    <a href="#" className="text-xs" style={{ color: '#60a5fa' }}>Voir tout</a>
+                <div className="glass-card rounded-2xl p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-bold text-white uppercase tracking-wider">Règles automatiques</h3>
+                    <a href="#" className="text-xs font-semibold transition-colors" style={{ color: '#2563EB' }}>Voir tout</a>
                   </div>
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-2.5 text-sm">
                     {[
-                      { label: 'Règle de score global', color: '#10b981' },
-                      { label: 'Règle de risque', color: '#10b981' },
-                      { label: 'Règle de délai', color: '#10b981' },
+                      { label: 'Règle de score global', color: '#22C55E' },
+                      { label: 'Règle de risque', color: '#22C55E' },
+                      { label: 'Règle de délai', color: '#22C55E' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                      <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
+                        <div className="flex items-center gap-2.5">
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                          <span className="text-gray-400">{item.label}</span>
+                          <span className="text-gray-300">{item.label}</span>
                         </div>
-                        <span style={{ color: item.color }} className="font-semibold">Actif</span>
+                        <span className="font-semibold" style={{ color: item.color }}>Actif</span>
                       </div>
                     ))}
                   </div>
@@ -478,8 +564,8 @@ export default function GlobalViewProfessional() {
             </div>
 
             {/* Timeline */}
-            <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-              <h3 className="text-sm font-semibold text-white mb-6">Chronologie globale</h3>
+            <div className="glass-card rounded-2xl p-6">
+              <h3 className="text-sm font-bold text-white mb-8 uppercase tracking-wider">Chronologie globale</h3>
               <div className="flex items-start justify-between px-4">
                 {[
                   { label: 'Création de l\'étude', date: '07/04/2024', completed: true },
@@ -489,24 +575,24 @@ export default function GlobalViewProfessional() {
                   { label: 'Dernière action', date: '20/05/2024', completed: true },
                 ].map((item, i) => (
                   <div key={i} className="flex flex-col items-center flex-1 relative">
-                    <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center mb-2 relative z-10" style={{ backgroundColor: item.completed ? '#3b82f6' : 'transparent', borderColor: item.completed ? '#3b82f6' : '#4b5563' }}>
+                    <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center mb-3 relative z-10 transition-all" style={{ backgroundColor: item.completed ? '#2563EB' : 'transparent', borderColor: item.completed ? '#2563EB' : '#4b5563' }}>
                       {item.completed && <div className="w-2 h-2 bg-white rounded-full" />}
                     </div>
-                    {i < 4 && <div className="absolute top-3 left-1/2 w-1/2 h-0.5" style={{ backgroundColor: '#3b82f6' }} />}
-                    <p className="text-xs text-gray-400 text-center mt-2">{item.label}</p>
+                    {i < 4 && <div className="absolute top-3 left-1/2 w-1/2 h-0.5" style={{ backgroundColor: '#2563EB' }} />}
+                    <p className="text-xs text-gray-400 text-center mt-2 font-medium">{item.label}</p>
                     <p className="text-xs text-gray-600">{item.date}</p>
                   </div>
                 ))}
               </div>
-              <div className="mt-6 p-3 rounded border" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: 'rgba(16, 185, 129, 0.3)' }}>
-                <p className="text-xs text-gray-400 mb-1">Décision finale prévue</p>
-                <p className="text-lg font-bold text-green-400">19/06/2024</p>
+              <div className="mt-6 p-4 rounded-xl border" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)', borderColor: 'rgba(34, 197, 94, 0.3)' }}>
+                <p className="text-xs text-gray-400 mb-1 font-medium">Décision finale prévue</p>
+                <p className="text-lg font-bold" style={{ color: '#22C55E' }}>19/06/2024</p>
                 <p className="text-xs text-gray-600 mt-1">(Dans 30 jours)</p>
               </div>
             </div>
 
             {/* Footer */}
-            <div className="text-xs text-gray-600" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.2)', paddingTop: '1rem' }}>
+            <div className="text-xs text-gray-600 pt-4" style={{ borderTop: '1px solid rgba(37, 99, 235, 0.1)' }}>
               Étude ID : #1234 • Créée le 07/04/2024 par Admin • Dernière mise à jour : 20/05/2024 à 14:30
             </div>
           </div>
