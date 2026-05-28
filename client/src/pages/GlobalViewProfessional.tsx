@@ -102,6 +102,12 @@ const statusColors: Record<string, { bg: string; text: string }> = {
   pending: { bg: 'rgba(107, 114, 128, 0.08)', text: '#9CA3AF' },
 };
 
+const Card = ({ children, className = '', style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) => (
+  <div className={`rounded-xl border border-slate-700/60 bg-slate-900/70 shadow-lg p-5 ${className}`} style={style}>
+    {children}
+  </div>
+);
+
 export default function GlobalViewProfessional() {
   const [expandedOptions, setExpandedOptions] = useState<Set<number>>(new Set([1, 2]));
   const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set([1, 3, 4]));
@@ -225,8 +231,8 @@ export default function GlobalViewProfessional() {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#0f172a' }}>
-          <main className="p-6 space-y-6">
-            {/* Stats Cards - 6 colonnes */}
+          <main className="p-6 space-y-5">
+            {/* Stats Cards - 6 colonnes indépendantes */}
             <div className="grid grid-cols-6 gap-4">
               {[
                 { icon: FolderOpen, label: 'Options', value: totalOptions, color: '#3B82F6' },
@@ -236,7 +242,7 @@ export default function GlobalViewProfessional() {
                 { icon: AlertTriangle, label: 'Risques élevés', value: highRisks, color: '#EF4444' },
                 { icon: Bell, label: 'Alertes', value: alerts, color: '#8B5CF6' },
               ].map((stat, i) => (
-                <div key={i} className="rounded-lg border p-4" style={{ borderColor: 'rgba(59, 130, 246, 0.2)', backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
+                <Card key={i}>
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0" style={{ background: `${stat.color}15` }}>
                       <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
@@ -245,232 +251,229 @@ export default function GlobalViewProfessional() {
                   </div>
                   <p className="text-xs font-medium text-gray-400">{stat.label}</p>
                   <p className="text-xs text-gray-600 mt-0.5">Total des {stat.label.toLowerCase()}</p>
-                </div>
+                </Card>
               ))}
             </div>
 
-            {/* Main Content Card - UNE GRANDE CARD */}
-            <div className="rounded-lg border p-6" style={{ borderColor: 'rgba(59, 130, 246, 0.2)', backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
-              {/* 3 colonnes à l'intérieur */}
-              <div className="grid grid-cols-[280px_1fr_360px] gap-8">
-                {/* Left Column */}
-                <div className="space-y-6">
-                  {/* Legend */}
-                  <div>
-                    <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Légende des statuts</h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      {[
-                        { status: 'favorable', label: 'Favorable' },
-                        { status: 'risk', label: 'Risque' },
-                        { status: 'blocked', label: 'Bloqué' },
-                        { status: 'abandoned', label: 'Abandonné' },
-                        { status: 'in_progress', label: 'En cours' },
-                        { status: 'completed', label: 'Terminé' },
-                        { status: 'delayed', label: 'En retard' },
-                        { status: 'pending', label: 'À traiter' },
-                      ].map((item) => (
-                        <div key={item.status} className="flex items-center gap-2.5">
-                          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[item.status]?.text }} />
-                          <span className="text-xs text-gray-400">{item.label}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Best Option */}
-                  <div className="rounded-lg border-2 p-4" style={{ borderColor: '#22C55E', backgroundColor: 'rgba(34, 197, 94, 0.05)' }}>
-                    <div className="flex items-center gap-2 mb-4">
-                      <Trophy className="w-4 h-4" style={{ color: '#F59E0B' }} />
-                      <h3 className="text-xs font-bold text-white uppercase tracking-wide">Meilleure option</h3>
-                    </div>
-                    <p className="text-xs font-semibold mb-1" style={{ color: '#22C55E' }}>{bestOption.name.split(' - ')[1]}</p>
-                    <p className="text-xs mb-4" style={{ color: '#22C55E' }}>{getStatusLabel(bestOption.status)}</p>
-                    <p className="text-3xl font-bold mb-5">
-                      <span style={{ color: '#22C55E' }}>{bestOption.score}</span>
-                      <span className="text-gray-500 text-sm"> / 100</span>
-                    </p>
-                    <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold rounded-lg" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
-                      <Eye className="w-3.5 h-3.5" />
-                      Voir le détail
-                    </button>
-                  </div>
-                </div>
-
-                {/* Center Column - Arborescence */}
-                <div>
-                  <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Arborescence globale</h3>
-                  <div className="space-y-0.5 max-h-96 overflow-y-auto pr-2">
-                    {mockData.map((option) => (
-                      <div key={option.id}>
-                        <button
-                          onClick={() => toggleOption(option.id)}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
-                        >
-                          {expandedOptions.has(option.id) ? (
-                            <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
-                          ) : (
-                            <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
-                          )}
-                          <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
-                          <span className="flex-1 truncate font-medium text-white">{option.name}</span>
-                          <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
-                            {getStatusLabel(option.status)}
-                          </span>
-                          <span className="text-xs font-bold text-gray-300 flex-shrink-0">{option.score}/100</span>
-                        </button>
-
-                        {expandedOptions.has(option.id) && (
-                          <div className="ml-4 space-y-0.5">
-                            {option.posts.map((post) => (
-                              <div key={post.id}>
-                                <button
-                                  onClick={() => togglePost(post.id)}
-                                  className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
-                                >
-                                  {expandedPosts.has(post.id) ? (
-                                    <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
-                                  ) : (
-                                    <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
-                                  )}
-                                  <CheckSquare className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
-                                  <span className="flex-1 truncate text-gray-200">{post.name}</span>
-                                  <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
-                                    {getStatusLabel(post.status)}
-                                  </span>
-                                  <span className="text-xs font-bold text-gray-300 flex-shrink-0">{post.score}/100</span>
-                                </button>
-
-                                {expandedPosts.has(post.id) && (
-                                  <div className="ml-4 space-y-0.5">
-                                    {post.actions.map((action) => (
-                                      <div key={action.id} className="flex items-center gap-2 px-3 py-2 rounded text-xs transition-colors hover:bg-white/5">
-                                        <ChevronRight className="w-3.5 h-3.5 opacity-0 flex-shrink-0" />
-                                        <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[action.status]?.text }} />
-                                        <span className="flex-1 truncate text-gray-400">{action.name}</span>
-                                        <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
-                                          {getStatusLabel(action.status)}
-                                        </span>
-                                        <span className="text-xs font-bold text-gray-300 flex-shrink-0">{action.score}/100</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
+            {/* Main Grid - 3 colonnes indépendantes */}
+            <div className="grid grid-cols-[280px_1fr_360px] gap-5">
+              {/* Left Column - 2 cards stacked */}
+              <div className="space-y-5">
+                {/* Legend Card */}
+                <Card>
+                  <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Légende des statuts</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { status: 'favorable', label: 'Favorable' },
+                      { status: 'risk', label: 'Risque' },
+                      { status: 'blocked', label: 'Bloqué' },
+                      { status: 'abandoned', label: 'Abandonné' },
+                      { status: 'in_progress', label: 'En cours' },
+                      { status: 'completed', label: 'Terminé' },
+                      { status: 'delayed', label: 'En retard' },
+                      { status: 'pending', label: 'À traiter' },
+                    ].map((item) => (
+                      <div key={item.status} className="flex items-center gap-2.5">
+                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[item.status]?.text }} />
+                        <span className="text-xs text-gray-400">{item.label}</span>
                       </div>
                     ))}
                   </div>
-                </div>
+                </Card>
 
-                {/* Right Column */}
-                <div className="space-y-6">
-                  {/* Score Summary */}
-                  <div>
-                    <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Synthèse des scores</h3>
-                    <div className="flex justify-center mb-4">
-                      <div className="relative w-24 h-24">
-                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
-                          <circle cx="60" cy="60" r="45" fill="none" stroke="rgba(59, 130, 246, 0.1)" strokeWidth="7" />
-                          <circle cx="60" cy="60" r="45" fill="none" stroke="#3B82F6" strokeWidth="7" strokeDasharray={`${(avgScore / 100) * 283} 283`} strokeLinecap="round" />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <span className="text-xl font-bold text-white">{avgScore}</span>
-                          <span className="text-xs text-gray-500">/100</span>
+                {/* Best Option Card */}
+                <Card className="border-2" style={{ borderColor: '#22C55E', backgroundColor: 'rgba(34, 197, 94, 0.05)' }}>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Trophy className="w-4 h-4" style={{ color: '#F59E0B' }} />
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wide">Meilleure option</h3>
+                  </div>
+                  <p className="text-xs font-semibold mb-1" style={{ color: '#22C55E' }}>{bestOption.name.split(' - ')[1]}</p>
+                  <p className="text-xs mb-4" style={{ color: '#22C55E' }}>{getStatusLabel(bestOption.status)}</p>
+                  <p className="text-3xl font-bold mb-5">
+                    <span style={{ color: '#22C55E' }}>{bestOption.score}</span>
+                    <span className="text-gray-500 text-sm"> / 100</span>
+                  </p>
+                  <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold rounded-lg" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                    <Eye className="w-3.5 h-3.5" />
+                    Voir le détail
+                  </button>
+                </Card>
+              </div>
+
+              {/* Center Column - Arborescence Card */}
+              <Card>
+                <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Arborescence globale</h3>
+                <div className="space-y-0.5 max-h-96 overflow-y-auto pr-2">
+                  {mockData.map((option) => (
+                    <div key={option.id}>
+                      <button
+                        onClick={() => toggleOption(option.id)}
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
+                      >
+                        {expandedOptions.has(option.id) ? (
+                          <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                        ) : (
+                          <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                        )}
+                        <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                        <span className="flex-1 truncate font-medium text-white">{option.name}</span>
+                        <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
+                          {getStatusLabel(option.status)}
+                        </span>
+                        <span className="text-xs font-bold text-gray-300 flex-shrink-0">{option.score}/100</span>
+                      </button>
+
+                      {expandedOptions.has(option.id) && (
+                        <div className="ml-4 space-y-0.5">
+                          {option.posts.map((post) => (
+                            <div key={post.id}>
+                              <button
+                                onClick={() => togglePost(post.id)}
+                                className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
+                              >
+                                {expandedPosts.has(post.id) ? (
+                                  <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                                ) : (
+                                  <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                                )}
+                                <CheckSquare className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                                <span className="flex-1 truncate text-gray-200">{post.name}</span>
+                                <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
+                                  {getStatusLabel(post.status)}
+                                </span>
+                                <span className="text-xs font-bold text-gray-300 flex-shrink-0">{post.score}/100</span>
+                              </button>
+
+                              {expandedPosts.has(post.id) && (
+                                <div className="ml-4 space-y-0.5">
+                                  {post.actions.map((action) => (
+                                    <div key={action.id} className="flex items-center gap-2 px-3 py-2 rounded text-xs transition-colors hover:bg-white/5">
+                                      <ChevronRight className="w-3.5 h-3.5 opacity-0 flex-shrink-0" />
+                                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[action.status]?.text }} />
+                                      <span className="flex-1 truncate text-gray-400">{action.name}</span>
+                                      <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
+                                        {getStatusLabel(action.status)}
+                                      </span>
+                                      <span className="text-xs font-bold text-gray-300 flex-shrink-0">{action.score}/100</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
                         </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              {/* Right Column - 4 cards stacked */}
+              <div className="space-y-5">
+                {/* Score Summary Card */}
+                <Card>
+                  <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Synthèse des scores</h3>
+                  <div className="flex justify-center mb-4">
+                    <div className="relative w-24 h-24">
+                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="45" fill="none" stroke="rgba(59, 130, 246, 0.1)" strokeWidth="7" />
+                        <circle cx="60" cy="60" r="45" fill="none" stroke="#3B82F6" strokeWidth="7" strokeDasharray={`${(avgScore / 100) * 283} 283`} strokeLinecap="round" />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className="text-xl font-bold text-white">{avgScore}</span>
+                        <span className="text-xs text-gray-500">/100</span>
                       </div>
                     </div>
-                    <div className="space-y-2 text-xs">
-                      {[
-                        { label: 'Impact / Valeur', value: '40%', color: '#3B82F6' },
-                        { label: 'Faisabilité', value: '20%', color: '#22C55E' },
-                        { label: 'Coût - Temps', value: '20%', color: '#F59E0B' },
-                        { label: 'Risque', value: '10%', color: '#EF4444' },
-                        { label: 'Réversibilité', value: '10%', color: '#8B5CF6' },
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
-                            <span className="text-gray-400">{item.label}</span>
-                          </div>
-                          <span className="font-semibold text-white">{item.value}</span>
-                        </div>
-                      ))}
-                    </div>
                   </div>
-
-                  {/* Criteria */}
-                  <div>
-                    <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Critères d'évaluation</h3>
-                    <div className="space-y-2 text-xs">
-                      {[
-                        { label: 'Impact / Valeur', value: '40%' },
-                        { label: 'Faisabilité', value: '20%' },
-                        { label: 'Coût - Temps', value: '20%' },
-                        { label: 'Risque', value: '10%' },
-                        { label: 'Réversibilité', value: '10%' },
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
+                  <div className="space-y-2 text-xs">
+                    {[
+                      { label: 'Impact / Valeur', value: '40%', color: '#3B82F6' },
+                      { label: 'Faisabilité', value: '20%', color: '#22C55E' },
+                      { label: 'Coût - Temps', value: '20%', color: '#F59E0B' },
+                      { label: 'Risque', value: '10%', color: '#EF4444' },
+                      { label: 'Réversibilité', value: '10%', color: '#8B5CF6' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
                           <span className="text-gray-400">{item.label}</span>
-                          <span className="font-semibold text-white">{item.value}</span>
                         </div>
-                      ))}
-                    </div>
+                        <span className="font-semibold text-white">{item.value}</span>
+                      </div>
+                    ))}
                   </div>
+                </Card>
 
-                  {/* Alerts */}
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xs font-bold text-white uppercase tracking-wide">Alertes actives</h3>
-                      <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
-                    </div>
-                    <div className="space-y-2 text-xs">
-                      {[
-                        { label: 'Actions en retard', value: '5', color: '#EF4444' },
-                        { label: 'Risques élevés', value: '3', color: '#EF4444' },
-                        { label: 'Postes à revoir', value: '4', color: '#F59E0B' },
-                        { label: 'Décisions en attente', value: '2', color: '#3B82F6' },
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
-                          <div className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
-                            <span className="text-gray-400">{item.label}</span>
-                          </div>
-                          <span className="font-semibold" style={{ color: item.color }}>{item.value}</span>
-                        </div>
-                      ))}
-                    </div>
+                {/* Criteria Card */}
+                <Card>
+                  <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Critères d'évaluation</h3>
+                  <div className="space-y-2 text-xs">
+                    {[
+                      { label: 'Impact / Valeur', value: '40%' },
+                      { label: 'Faisabilité', value: '20%' },
+                      { label: 'Coût - Temps', value: '20%' },
+                      { label: 'Risque', value: '10%' },
+                      { label: 'Réversibilité', value: '10%' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
+                        <span className="text-gray-400">{item.label}</span>
+                        <span className="font-semibold text-white">{item.value}</span>
+                      </div>
+                    ))}
                   </div>
+                </Card>
 
-                  {/* Rules */}
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xs font-bold text-white uppercase tracking-wide">Règles automatiques</h3>
-                      <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
-                    </div>
-                    <div className="space-y-2 text-xs">
-                      {[
-                        { label: 'Règle de score global', color: '#22C55E' },
-                        { label: 'Règle de risque', color: '#22C55E' },
-                        { label: 'Règle de délai', color: '#22C55E' },
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
-                          <div className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
-                            <span className="text-gray-400">{item.label}</span>
-                          </div>
-                          <span className="font-semibold" style={{ color: item.color }}>Actif</span>
-                        </div>
-                      ))}
-                    </div>
+                {/* Alerts Card */}
+                <Card>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wide">Alertes actives</h3>
+                    <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
                   </div>
-                </div>
+                  <div className="space-y-2 text-xs">
+                    {[
+                      { label: 'Actions en retard', value: '5', color: '#EF4444' },
+                      { label: 'Risques élevés', value: '3', color: '#EF4444' },
+                      { label: 'Postes à revoir', value: '4', color: '#F59E0B' },
+                      { label: 'Décisions en attente', value: '2', color: '#3B82F6' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
+                          <span className="text-gray-400">{item.label}</span>
+                        </div>
+                        <span className="font-semibold" style={{ color: item.color }}>{item.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+
+                {/* Rules Card */}
+                <Card>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wide">Règles automatiques</h3>
+                    <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    {[
+                      { label: 'Règle de score global', color: '#22C55E' },
+                      { label: 'Règle de risque', color: '#22C55E' },
+                      { label: 'Règle de délai', color: '#22C55E' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
+                          <span className="text-gray-400">{item.label}</span>
+                        </div>
+                        <span className="font-semibold" style={{ color: item.color }}>Actif</span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
               </div>
             </div>
 
-            {/* Timeline - Full Width */}
-            <div className="rounded-lg border p-6" style={{ borderColor: 'rgba(59, 130, 246, 0.2)', backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
+            {/* Timeline Card - Full Width */}
+            <Card>
               <h3 className="text-xs font-bold text-white mb-6 uppercase tracking-wide">Chronologie globale</h3>
               <div className="flex items-start justify-between px-4 mb-6">
                 {[
@@ -495,7 +498,7 @@ export default function GlobalViewProfessional() {
                 <p className="text-base font-bold" style={{ color: '#22C55E' }}>19/06/2024</p>
                 <p className="text-xs text-gray-600 mt-1">(Dans 30 jours)</p>
               </div>
-            </div>
+            </Card>
 
             {/* Footer */}
             <div className="text-xs text-gray-600 pt-2" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.1)' }}>
