@@ -145,44 +145,11 @@ export default function GlobalViewProfessional() {
   const bestOption = mockData.reduce((best, opt) => opt.score > best.score ? opt : best);
 
   return (
-    <div className="min-h-screen flex bg-slate-950" style={{ backgroundColor: '#0f172a' }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        
-        * {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-
-        .glass-card {
-          background: rgba(15, 23, 42, 0.4);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(59, 130, 246, 0.1);
-          transition: all 0.3s ease;
-        }
-
-        .glass-card:hover {
-          background: rgba(15, 23, 42, 0.6);
-          border-color: rgba(59, 130, 246, 0.15);
-        }
-
-        .stat-card {
-          background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(37, 99, 235, 0.02) 100%);
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(59, 130, 246, 0.12);
-          transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-          background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(37, 99, 235, 0.04) 100%);
-          border-color: rgba(59, 130, 246, 0.2);
-          transform: translateY(-1px);
-        }
-      `}</style>
-
+    <div className="min-h-screen flex" style={{ backgroundColor: '#0f172a' }}>
       {/* Sidebar */}
-      <div className="w-52 flex flex-col flex-shrink-0 bg-gradient-to-b from-slate-950 to-slate-900" style={{ borderRight: '1px solid rgba(59, 130, 246, 0.08)' }}>
+      <div className="w-52 flex flex-col flex-shrink-0" style={{ backgroundColor: '#0f172a', borderRight: '1px solid rgba(59, 130, 246, 0.1)' }}>
         {/* Logo */}
-        <div className="px-4 py-5 flex items-center gap-2.5" style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.08)' }}>
+        <div className="px-4 py-5 flex items-center gap-2.5" style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)' }}>
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3B82F6, #1e40af)' }}>
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
@@ -204,7 +171,7 @@ export default function GlobalViewProfessional() {
           ].map((item, i) => (
             <button
               key={i}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200"
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-md text-sm font-medium transition-all"
               style={{
                 color: item.active ? '#3B82F6' : '#9CA3AF',
                 backgroundColor: item.active ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
@@ -217,7 +184,7 @@ export default function GlobalViewProfessional() {
         </nav>
 
         {/* Footer */}
-        <div className="p-3 space-y-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.08)' }}>
+        <div className="p-3 space-y-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.1)' }}>
           <div className="flex items-center gap-2 px-2">
             <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs" style={{ background: 'linear-gradient(135deg, #3B82F6, #1e40af)' }}>
               AD
@@ -229,7 +196,7 @@ export default function GlobalViewProfessional() {
           </div>
           <div className="flex items-center justify-center gap-2 px-2 py-2 rounded-md" style={{ backgroundColor: 'rgba(59, 130, 246, 0.05)' }}>
             <Sun className="w-3.5 h-3.5 text-gray-500" />
-            <button className="w-9 h-5 rounded-full transition-all" style={{ backgroundColor: '#3B82F6' }} />
+            <button className="w-9 h-5 rounded-full" style={{ backgroundColor: '#3B82F6' }} />
             <Moon className="w-3.5 h-3.5 text-gray-500" />
           </div>
         </div>
@@ -238,18 +205,18 @@ export default function GlobalViewProfessional() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="px-8 py-5 flex items-center justify-between flex-shrink-0" style={{ backgroundColor: '#0f172a', borderBottom: '1px solid rgba(59, 130, 246, 0.08)' }}>
+        <div className="px-8 py-5 flex items-center justify-between flex-shrink-0" style={{ backgroundColor: '#0f172a', borderBottom: '1px solid rgba(59, 130, 246, 0.1)' }}>
           <div>
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Étude de faisabilité</p>
             <h1 className="text-2xl font-bold text-white mt-1">Vue globale</h1>
             <p className="text-xs text-gray-500 mt-0.5">Synthèse complète de l'étude et de toutes les options</p>
           </div>
           <div className="flex gap-2.5">
-            <button className="flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg transition-all" style={{ color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.25)', backgroundColor: 'rgba(59, 130, 246, 0.05)' }}>
+            <button className="flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg" style={{ color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.25)', backgroundColor: 'rgba(59, 130, 246, 0.05)' }}>
               <Filter className="w-3.5 h-3.5" />
               Filtrer
             </button>
-            <button className="flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-lg text-white transition-all" style={{ background: 'linear-gradient(135deg, #3B82F6, #1e40af)' }}>
+            <button className="flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-lg text-white" style={{ background: 'linear-gradient(135deg, #3B82F6, #1e40af)' }}>
               <Plus className="w-3.5 h-3.5" />
               Ajouter
             </button>
@@ -258,7 +225,7 @@ export default function GlobalViewProfessional() {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#0f172a' }}>
-          <div className="p-8 space-y-6">
+          <main className="p-6 space-y-4">
             {/* Stats Cards - 6 colonnes */}
             <div className="grid grid-cols-6 gap-4">
               {[
@@ -269,7 +236,7 @@ export default function GlobalViewProfessional() {
                 { icon: AlertTriangle, label: 'Risques élevés', value: highRisks, color: '#EF4444' },
                 { icon: Bell, label: 'Alertes', value: alerts, color: '#8B5CF6' },
               ].map((stat, i) => (
-                <div key={i} className="stat-card rounded-lg p-4">
+                <div key={i} className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-4">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style={{ background: `${stat.color}15` }}>
                       <stat.icon className="w-4.5 h-4.5" style={{ color: stat.color }} />
@@ -283,11 +250,11 @@ export default function GlobalViewProfessional() {
             </div>
 
             {/* Main Grid - 3 colonnes */}
-            <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr 360px', gap: '24px' }}>
+            <div className="grid grid-cols-[280px_1fr_360px] gap-4">
               {/* Left Column */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Legend */}
-                <div className="glass-card rounded-xl p-5">
+                <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Légende des statuts</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {[
@@ -300,16 +267,16 @@ export default function GlobalViewProfessional() {
                       { status: 'delayed', label: 'En retard' },
                       { status: 'pending', label: 'À traiter' },
                     ].map((item) => (
-                      <div key={item.status} className="flex items-center gap-2.5 px-2 py-1.5 rounded hover:bg-white/5 transition-colors">
+                      <div key={item.status} className="flex items-center gap-2.5">
                         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[item.status]?.text }} />
-                        <span className="text-xs text-gray-400 whitespace-nowrap">{item.label}</span>
+                        <span className="text-xs text-gray-400">{item.label}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Best Option */}
-                <div className="glass-card rounded-xl p-5 border-2" style={{ borderColor: '#22C55E' }}>
+                <div className="rounded-xl border-2 border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5" style={{ borderColor: '#22C55E' }}>
                   <div className="flex items-center gap-2 mb-4">
                     <Trophy className="w-4 h-4" style={{ color: '#F59E0B' }} />
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Meilleure option</h3>
@@ -320,7 +287,7 @@ export default function GlobalViewProfessional() {
                     <span style={{ color: '#22C55E' }}>{bestOption.score}</span>
                     <span className="text-gray-500 text-sm"> / 100</span>
                   </p>
-                  <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold rounded-lg transition-all" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                  <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold rounded-lg" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
                     <Eye className="w-3.5 h-3.5" />
                     Voir le détail
                   </button>
@@ -328,7 +295,7 @@ export default function GlobalViewProfessional() {
               </div>
 
               {/* Center Column - Arborescence */}
-              <div className="glass-card rounded-xl p-5">
+              <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
                 <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Arborescence globale</h3>
                 <div className="space-y-0.5 max-h-96 overflow-y-auto pr-2">
                   {mockData.map((option) => (
@@ -343,8 +310,8 @@ export default function GlobalViewProfessional() {
                           <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
                         )}
                         <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
-                        <span className="flex-1 truncate font-medium text-white text-xs">{option.name}</span>
-                        <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium whitespace-nowrap" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
+                        <span className="flex-1 truncate font-medium text-white">{option.name}</span>
+                        <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
                           {getStatusLabel(option.status)}
                         </span>
                         <span className="text-xs font-bold text-gray-300 flex-shrink-0">{option.score}/100</span>
@@ -364,8 +331,8 @@ export default function GlobalViewProfessional() {
                                   <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
                                 )}
                                 <CheckSquare className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
-                                <span className="flex-1 truncate text-gray-200 text-xs">{post.name}</span>
-                                <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium whitespace-nowrap" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
+                                <span className="flex-1 truncate text-gray-200">{post.name}</span>
+                                <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
                                   {getStatusLabel(post.status)}
                                 </span>
                                 <span className="text-xs font-bold text-gray-300 flex-shrink-0">{post.score}/100</span>
@@ -377,8 +344,8 @@ export default function GlobalViewProfessional() {
                                     <div key={action.id} className="flex items-center gap-2 px-3 py-2 rounded text-xs transition-colors hover:bg-white/5">
                                       <ChevronRight className="w-3.5 h-3.5 opacity-0 flex-shrink-0" />
                                       <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[action.status]?.text }} />
-                                      <span className="flex-1 truncate text-gray-400 text-xs">{action.name}</span>
-                                      <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium whitespace-nowrap" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
+                                      <span className="flex-1 truncate text-gray-400">{action.name}</span>
+                                      <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
                                         {getStatusLabel(action.status)}
                                       </span>
                                       <span className="text-xs font-bold text-gray-300 flex-shrink-0">{action.score}/100</span>
@@ -396,9 +363,9 @@ export default function GlobalViewProfessional() {
               </div>
 
               {/* Right Column */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Score Summary */}
-                <div className="glass-card rounded-xl p-5">
+                <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Synthèse des scores</h3>
                   <div className="flex justify-center mb-4">
                     <div className="relative w-24 h-24">
@@ -432,7 +399,7 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* Criteria */}
-                <div className="glass-card rounded-xl p-5">
+                <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Critères d'évaluation</h3>
                   <div className="space-y-2 text-xs">
                     {[
@@ -451,10 +418,10 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* Alerts */}
-                <div className="glass-card rounded-xl p-5">
+                <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Alertes actives</h3>
-                    <a href="#" className="text-xs font-semibold transition-colors" style={{ color: '#3B82F6' }}>Voir tout</a>
+                    <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
                   </div>
                   <div className="space-y-2 text-xs">
                     {[
@@ -475,10 +442,10 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* Rules */}
-                <div className="glass-card rounded-xl p-5">
+                <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Règles automatiques</h3>
-                    <a href="#" className="text-xs font-semibold transition-colors" style={{ color: '#3B82F6' }}>Voir tout</a>
+                    <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
                   </div>
                   <div className="space-y-2 text-xs">
                     {[
@@ -500,7 +467,7 @@ export default function GlobalViewProfessional() {
             </div>
 
             {/* Timeline - Full Width */}
-            <div className="glass-card rounded-xl p-5">
+            <div className="rounded-xl border border-slate-700/60 bg-slate-900/60 shadow-lg backdrop-blur p-5">
               <h3 className="text-xs font-bold text-white mb-6 uppercase tracking-wide">Chronologie globale</h3>
               <div className="flex items-start justify-between px-4 mb-6">
                 {[
@@ -528,10 +495,10 @@ export default function GlobalViewProfessional() {
             </div>
 
             {/* Footer */}
-            <div className="text-xs text-gray-600 pt-2" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.08)' }}>
+            <div className="text-xs text-gray-600 pt-2" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.1)' }}>
               Étude ID : #1234 • Créée le 07/04/2024 par Admin • Dernière mise à jour : 20/05/2024 à 14:30
             </div>
-          </div>
+          </main>
         </div>
       </div>
     </div>
