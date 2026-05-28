@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, Eye, Filter, Plus, LogOut, Settings, BarChart3, BookOpen, FolderOpen, CheckSquare, AlertTriangle, Bell, FileText, Shield, Sun, Moon, Eye as EyeIcon, Trophy } from 'lucide-react';
+import { ChevronDown, ChevronRight, Eye, Filter, Plus, LogOut, Settings, BarChart3, BookOpen, FolderOpen, CheckSquare, AlertTriangle, Bell, FileText, Shield, Sun, Moon, Trophy } from 'lucide-react';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -93,20 +93,30 @@ const mockData: Option[] = [
   },
 ];
 
-const statusColors: Record<string, { bg: string; text: string; dot: string; icon: string }> = {
-  favorable: { bg: '#059669', text: '#10b981', dot: '#10b981', icon: '●' },
-  risk: { bg: '#d97706', text: '#f59e0b', dot: '#f59e0b', icon: '●' },
-  blocked: { bg: '#dc2626', text: '#ef4444', dot: '#ef4444', icon: '●' },
-  abandoned: { bg: '#6b7280', text: '#9ca3af', dot: '#9ca3af', icon: '●' },
-  in_progress: { bg: '#2563eb', text: '#3b82f6', dot: '#3b82f6', icon: '●' },
-  completed: { bg: '#059669', text: '#10b981', dot: '#10b981', icon: '✓' },
-  delayed: { bg: '#dc2626', text: '#ef4444', dot: '#ef4444', icon: '●' },
-  pending: { bg: '#6b7280', text: '#9ca3af', dot: '#9ca3af', icon: '●' },
+const statusDots: Record<string, string> = {
+  favorable: '🟢',
+  risk: '🟡',
+  blocked: '🔴',
+  abandoned: '⚪',
+  in_progress: '🔵',
+  completed: '✓',
+  delayed: '🔴',
+  pending: '⚪',
+};
+
+const statusColors: Record<string, { bg: string; text: string; border: string }> = {
+  favorable: { bg: '#064e3b', text: '#10b981', border: '#10b981' },
+  risk: { bg: '#78350f', text: '#f59e0b', border: '#f59e0b' },
+  blocked: { bg: '#7f1d1d', text: '#ef4444', border: '#ef4444' },
+  abandoned: { bg: '#374151', text: '#9ca3af', border: '#9ca3af' },
+  in_progress: { bg: '#1e3a8a', text: '#3b82f6', border: '#3b82f6' },
+  completed: { bg: '#064e3b', text: '#10b981', border: '#10b981' },
+  delayed: { bg: '#7f1d1d', text: '#ef4444', border: '#ef4444' },
+  pending: { bg: '#374151', text: '#9ca3af', border: '#9ca3af' },
 };
 
 export default function GlobalViewProfessional() {
   const { user, logout } = useAuth();
-  const { t, language, setLanguage } = useLanguage();
   const [expandedOptions, setExpandedOptions] = useState<Set<number>>(new Set([1, 2]));
   const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set([1, 3, 4]));
 
@@ -190,7 +200,7 @@ export default function GlobalViewProfessional() {
         {/* User */}
         <div className="p-3 space-y-2" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.2)' }}>
           <div className="flex items-center gap-2 px-2">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: '#3b82f6' }}>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: '#3b82f6' }}>
               AD
             </div>
             <div className="flex-1 min-w-0">
@@ -198,10 +208,6 @@ export default function GlobalViewProfessional() {
               <p className="text-xs text-gray-500">Administrateur</p>
             </div>
           </div>
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-400 hover:text-red-400 transition-colors">
-            <LogOut className="w-3 h-3" />
-            Déconnexion
-          </button>
         </div>
 
         {/* Theme Toggle */}
@@ -239,7 +245,7 @@ export default function GlobalViewProfessional() {
           linear-gradient(90deg, transparent 24%, rgba(59, 130, 246, 0.03) 25%, rgba(59, 130, 246, 0.03) 26%, transparent 27%, transparent 74%, rgba(59, 130, 246, 0.03) 75%, rgba(59, 130, 246, 0.03) 76%, transparent 77%, transparent)
         `, backgroundSize: '50px 50px' }}>
           <div className="space-y-6">
-            {/* Stats Cards */}
+            {/* Stats Cards - Grid Layout */}
             <div className="grid grid-cols-6 gap-4">
               {[
                 { icon: FolderOpen, label: 'Options', value: totalOptions, color: '#3b82f6', bg: '#1e3a8a' },
@@ -260,14 +266,14 @@ export default function GlobalViewProfessional() {
               ))}
             </div>
 
-            {/* Main Grid */}
+            {/* Main Layout: Left (Legend + Tree) | Right (Best Option + Scores + Alerts) */}
             <div className="grid grid-cols-3 gap-6">
-              {/* Left: Legend and Tree */}
+              {/* Left Column: Legend and Tree */}
               <div className="col-span-2 space-y-6">
                 {/* Legend */}
                 <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
                   <h3 className="text-sm font-semibold text-white mb-3">Légende des statuts</h3>
-                  <div className="grid grid-cols-4 gap-3">
+                  <div className="grid grid-cols-4 gap-4">
                     {[
                       { status: 'favorable', label: 'Favorable' },
                       { status: 'risk', label: 'Risque' },
@@ -279,29 +285,24 @@ export default function GlobalViewProfessional() {
                       { status: 'pending', label: 'À traiter' },
                     ].map((item) => (
                       <div key={item.status} className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[item.status]?.dot }} />
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: statusColors[item.status]?.text }} />
                         <span className="text-xs text-gray-400">{item.label}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Tree */}
+                {/* Arborescence */}
                 <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-semibold text-white">Arborescence globale</h3>
-                    <button className="flex items-center gap-1 px-2 py-1 text-xs rounded" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa' }}>
-                      <Eye className="w-3 h-3" />
-                      Tout développer
-                    </button>
-                  </div>
-                  <div className="space-y-1 max-h-96 overflow-y-auto">
+                  <h3 className="text-sm font-semibold text-white mb-4">Arborescence globale</h3>
+                  <div className="space-y-0 max-h-96 overflow-y-auto">
                     {mockData.map((option) => (
                       <div key={option.id}>
+                        {/* Option */}
                         <button
                           onClick={() => toggleOption(option.id)}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-sm transition-colors"
-                          style={{ color: '#e5e7eb', backgroundColor: expandedOptions.has(option.id) ? 'rgba(59, 130, 246, 0.1)' : 'transparent' }}
+                          className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-sm transition-colors hover:bg-opacity-50"
+                          style={{ color: '#e5e7eb' }}
                         >
                           {expandedOptions.has(option.id) ? (
                             <ChevronDown className="w-4 h-4" style={{ color: '#60a5fa' }} />
@@ -309,21 +310,22 @@ export default function GlobalViewProfessional() {
                             <ChevronRight className="w-4 h-4" style={{ color: '#60a5fa' }} />
                           )}
                           <FolderOpen className="w-4 h-4" style={{ color: '#60a5fa' }} />
-                          <span className="flex-1 truncate">{option.name}</span>
-                          <span className="text-xs px-2 py-1 rounded font-medium" style={{ backgroundColor: `${statusColors[option.status]?.bg}40`, color: statusColors[option.status]?.text }}>
+                          <span className="flex-1 truncate font-medium">{option.name}</span>
+                          <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
                             {getStatusLabel(option.status)}
                           </span>
-                          <span className="text-sm font-bold text-white ml-2">{option.score} / 100</span>
+                          <span className="text-sm font-bold text-white">{option.score} / 100</span>
                         </button>
 
+                        {/* Posts */}
                         {expandedOptions.has(option.id) && (
-                          <div className="ml-6 space-y-1 border-l" style={{ borderColor: 'rgba(59, 130, 246, 0.1)' }}>
+                          <div className="ml-4 space-y-0">
                             {option.posts.map((post) => (
                               <div key={post.id}>
                                 <button
                                   onClick={() => togglePost(post.id)}
-                                  className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-sm transition-colors"
-                                  style={{ color: '#d1d5db', backgroundColor: expandedPosts.has(post.id) ? 'rgba(59, 130, 246, 0.05)' : 'transparent' }}
+                                  className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-sm transition-colors hover:bg-opacity-50"
+                                  style={{ color: '#d1d5db' }}
                                 >
                                   {expandedPosts.has(post.id) ? (
                                     <ChevronDown className="w-4 h-4" style={{ color: '#93c5fd' }} />
@@ -332,22 +334,24 @@ export default function GlobalViewProfessional() {
                                   )}
                                   <CheckSquare className="w-4 h-4" style={{ color: '#93c5fd' }} />
                                   <span className="flex-1 truncate">{post.name}</span>
-                                  <span className="text-xs px-2 py-1 rounded font-medium" style={{ backgroundColor: `${statusColors[post.status]?.bg}40`, color: statusColors[post.status]?.text }}>
+                                  <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
                                     {getStatusLabel(post.status)}
                                   </span>
-                                  <span className="text-sm font-bold text-white ml-2">{post.score} / 100</span>
+                                  <span className="text-sm font-bold text-white">{post.score} / 100</span>
                                 </button>
 
+                                {/* Actions */}
                                 {expandedPosts.has(post.id) && (
-                                  <div className="ml-6 space-y-1 border-l" style={{ borderColor: 'rgba(59, 130, 246, 0.05)' }}>
+                                  <div className="ml-4 space-y-0">
                                     {post.actions.map((action) => (
-                                      <div key={action.id} className="flex items-center gap-2 px-3 py-2 text-sm rounded transition-colors" style={{ color: '#9ca3af', backgroundColor: 'rgba(59, 130, 246, 0.02)' }}>
-                                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[action.status]?.dot }} />
+                                      <div key={action.id} className="flex items-center gap-2 px-2 py-2 text-sm rounded transition-colors" style={{ color: '#9ca3af' }}>
+                                        <ChevronRight className="w-4 h-4 opacity-0" />
+                                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[action.status]?.text }} />
                                         <span className="flex-1 truncate">{action.name}</span>
-                                        <span className="text-xs px-2 py-1 rounded font-medium" style={{ backgroundColor: `${statusColors[action.status]?.bg}40`, color: statusColors[action.status]?.text }}>
+                                        <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
                                           {getStatusLabel(action.status)}
                                         </span>
-                                        <span className="font-bold text-white ml-2">{action.score} / 100</span>
+                                        <span className="font-bold text-white">{action.score} / 100</span>
                                       </div>
                                     ))}
                                   </div>
@@ -362,26 +366,24 @@ export default function GlobalViewProfessional() {
                 </div>
               </div>
 
-              {/* Right: Best Option, Scores, Alerts */}
+              {/* Right Column: Best Option + Scores + Alerts */}
               <div className="space-y-6">
                 {/* Best Option */}
-                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(16, 185, 129, 0.3)' }}>
+                <div className="rounded p-4 border-2" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: '#10b981' }}>
                   <div className="flex items-center gap-2 mb-3">
                     <Trophy className="w-5 h-5" style={{ color: '#f59e0b' }} />
                     <h3 className="text-sm font-semibold text-white">Meilleure option</h3>
                   </div>
-                  <div className="rounded p-3 border-2" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: '#10b981' }}>
-                    <p className="text-sm font-semibold text-green-400 mb-1">{bestOption.name.split(' - ')[1]}</p>
-                    <p className="text-xs text-green-400 mb-3">{getStatusLabel(bestOption.status)}</p>
-                    <p className="text-2xl font-bold text-white">
-                      <span style={{ color: '#10b981' }}>{bestOption.score}</span>
-                      <span className="text-gray-400 text-sm"> / 100</span>
-                    </p>
-                    <button className="w-full mt-3 flex items-center justify-center gap-2 px-3 py-2 text-xs rounded" style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa' }}>
-                      <EyeIcon className="w-3 h-3" />
-                      Voir le détail
-                    </button>
-                  </div>
+                  <p className="text-sm font-semibold text-green-400 mb-1">{bestOption.name.split(' - ')[1]}</p>
+                  <p className="text-xs text-green-400 mb-3">{getStatusLabel(bestOption.status)}</p>
+                  <p className="text-3xl font-bold mb-3">
+                    <span style={{ color: '#10b981' }}>{bestOption.score}</span>
+                    <span className="text-gray-400 text-sm"> / 100</span>
+                  </p>
+                  <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs rounded" style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa' }}>
+                    <Eye className="w-3 h-3" />
+                    Voir le détail
+                  </button>
                 </div>
 
                 {/* Score Summary */}
@@ -423,11 +425,11 @@ export default function GlobalViewProfessional() {
                   <h3 className="text-sm font-semibold text-white mb-3">Critères d'évaluation</h3>
                   <div className="space-y-2 text-sm">
                     {[
-                      { icon: '📊', label: 'Impact / Valeur', value: '40%' },
-                      { icon: '✓', label: 'Faisabilité', value: '20%' },
-                      { icon: '⏱', label: 'Coût - Temps', value: '20%' },
-                      { icon: '⚠', label: 'Risque', value: '10%' },
-                      { icon: '↩', label: 'Réversibilité', value: '10%' },
+                      { label: 'Impact / Valeur', value: '40%' },
+                      { label: 'Faisabilité', value: '20%' },
+                      { label: 'Coût - Temps', value: '20%' },
+                      { label: 'Risque', value: '10%' },
+                      { label: 'Réversibilité', value: '10%' },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center justify-between">
                         <span className="text-gray-400">{item.label}</span>
