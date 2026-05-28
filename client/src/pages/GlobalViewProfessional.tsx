@@ -91,15 +91,15 @@ const mockData: Option[] = [
   },
 ];
 
-const statusColors: Record<string, { bg: string; text: string; border: string }> = {
-  favorable: { bg: 'rgba(34, 197, 94, 0.08)', text: '#22C55E', border: '#22C55E' },
-  risk: { bg: 'rgba(245, 158, 11, 0.08)', text: '#F59E0B', border: '#F59E0B' },
-  blocked: { bg: 'rgba(239, 68, 68, 0.08)', text: '#EF4444', border: '#EF4444' },
-  abandoned: { bg: 'rgba(107, 114, 128, 0.08)', text: '#9CA3AF', border: '#9CA3AF' },
-  in_progress: { bg: 'rgba(37, 99, 235, 0.08)', text: '#3B82F6', border: '#3B82F6' },
-  completed: { bg: 'rgba(34, 197, 94, 0.08)', text: '#22C55E', border: '#22C55E' },
-  delayed: { bg: 'rgba(239, 68, 68, 0.08)', text: '#EF4444', border: '#EF4444' },
-  pending: { bg: 'rgba(107, 114, 128, 0.08)', text: '#9CA3AF', border: '#9CA3AF' },
+const statusColors: Record<string, { bg: string; text: string }> = {
+  favorable: { bg: 'rgba(34, 197, 94, 0.08)', text: '#22C55E' },
+  risk: { bg: 'rgba(245, 158, 11, 0.08)', text: '#F59E0B' },
+  blocked: { bg: 'rgba(239, 68, 68, 0.08)', text: '#EF4444' },
+  abandoned: { bg: 'rgba(107, 114, 128, 0.08)', text: '#9CA3AF' },
+  in_progress: { bg: 'rgba(59, 130, 246, 0.08)', text: '#3B82F6' },
+  completed: { bg: 'rgba(34, 197, 94, 0.08)', text: '#22C55E' },
+  delayed: { bg: 'rgba(239, 68, 68, 0.08)', text: '#EF4444' },
+  pending: { bg: 'rgba(107, 114, 128, 0.08)', text: '#9CA3AF' },
 };
 
 export default function GlobalViewProfessional() {
@@ -145,7 +145,7 @@ export default function GlobalViewProfessional() {
   const bestOption = mockData.reduce((best, opt) => opt.score > best.score ? opt : best);
 
   return (
-    <div className="min-h-screen flex bg-black" style={{ backgroundColor: '#0f172a' }}>
+    <div className="min-h-screen flex bg-slate-950" style={{ backgroundColor: '#0f172a' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         
@@ -153,13 +153,14 @@ export default function GlobalViewProfessional() {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
-        .glass {
+        .glass-card {
           background: rgba(15, 23, 42, 0.4);
           backdrop-filter: blur(12px);
           border: 1px solid rgba(59, 130, 246, 0.1);
+          transition: all 0.3s ease;
         }
 
-        .glass:hover {
+        .glass-card:hover {
           background: rgba(15, 23, 42, 0.6);
           border-color: rgba(59, 130, 246, 0.15);
         }
@@ -258,8 +259,8 @@ export default function GlobalViewProfessional() {
         {/* Content */}
         <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#0f172a' }}>
           <div className="p-8 space-y-6">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-6 gap-3">
+            {/* Stats Cards - 6 colonnes */}
+            <div className="grid grid-cols-6 gap-4">
               {[
                 { icon: FolderOpen, label: 'Options', value: totalOptions, color: '#3B82F6' },
                 { icon: CheckSquare, label: 'Postes', value: totalPosts, color: '#3B82F6' },
@@ -268,27 +269,27 @@ export default function GlobalViewProfessional() {
                 { icon: AlertTriangle, label: 'Risques élevés', value: highRisks, color: '#EF4444' },
                 { icon: Bell, label: 'Alertes', value: alerts, color: '#8B5CF6' },
               ].map((stat, i) => (
-                <div key={i} className="stat-card rounded-lg p-3.5">
-                  <div className="flex items-start gap-2.5 mb-2">
-                    <div className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0" style={{ background: `${stat.color}15` }}>
-                      <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
+                <div key={i} className="stat-card rounded-lg p-4">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-9 h-9 rounded flex items-center justify-center flex-shrink-0" style={{ background: `${stat.color}15` }}>
+                      <stat.icon className="w-4.5 h-4.5" style={{ color: stat.color }} />
                     </div>
-                    <span className="text-lg font-bold text-white">{stat.value}</span>
+                    <span className="text-xl font-bold text-white">{stat.value}</span>
                   </div>
                   <p className="text-xs font-medium text-gray-400">{stat.label}</p>
-                  <p className="text-xs text-gray-600 mt-0.5">Total des {stat.label.toLowerCase()}</p>
+                  <p className="text-xs text-gray-600 mt-1">Total des {stat.label.toLowerCase()}</p>
                 </div>
               ))}
             </div>
 
-            {/* Main Grid */}
-            <div className="grid grid-cols-12 gap-6">
-              {/* Left: Legend + Best Option */}
-              <div className="col-span-2 space-y-6">
+            {/* Main Grid - 3 colonnes */}
+            <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr 360px', gap: '24px' }}>
+              {/* Left Column */}
+              <div className="space-y-6">
                 {/* Legend */}
-                <div className="glass rounded-xl p-4">
-                  <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">Légende des statuts</h3>
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="glass-card rounded-xl p-5">
+                  <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Légende des statuts</h3>
+                  <div className="grid grid-cols-2 gap-3">
                     {[
                       { status: 'favorable', label: 'Favorable' },
                       { status: 'risk', label: 'Risque' },
@@ -299,42 +300,42 @@ export default function GlobalViewProfessional() {
                       { status: 'delayed', label: 'En retard' },
                       { status: 'pending', label: 'À traiter' },
                     ].map((item) => (
-                      <div key={item.status} className="flex items-center gap-2 p-1.5">
+                      <div key={item.status} className="flex items-center gap-2.5 px-2 py-1.5 rounded hover:bg-white/5 transition-colors">
                         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[item.status]?.text }} />
-                        <span className="text-xs text-gray-400">{item.label}</span>
+                        <span className="text-xs text-gray-400 whitespace-nowrap">{item.label}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Best Option */}
-                <div className="glass rounded-xl p-4 border-2" style={{ borderColor: '#22C55E' }}>
-                  <div className="flex items-center gap-2 mb-3">
+                <div className="glass-card rounded-xl p-5 border-2" style={{ borderColor: '#22C55E' }}>
+                  <div className="flex items-center gap-2 mb-4">
                     <Trophy className="w-4 h-4" style={{ color: '#F59E0B' }} />
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Meilleure option</h3>
                   </div>
-                  <p className="text-xs font-semibold mb-0.5" style={{ color: '#22C55E' }}>{bestOption.name.split(' - ')[1]}</p>
-                  <p className="text-xs mb-3" style={{ color: '#22C55E' }}>{getStatusLabel(bestOption.status)}</p>
-                  <p className="text-3xl font-bold mb-4">
+                  <p className="text-xs font-semibold mb-1" style={{ color: '#22C55E' }}>{bestOption.name.split(' - ')[1]}</p>
+                  <p className="text-xs mb-4" style={{ color: '#22C55E' }}>{getStatusLabel(bestOption.status)}</p>
+                  <p className="text-3xl font-bold mb-5">
                     <span style={{ color: '#22C55E' }}>{bestOption.score}</span>
                     <span className="text-gray-500 text-sm"> / 100</span>
                   </p>
-                  <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg transition-all" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                  <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold rounded-lg transition-all" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
                     <Eye className="w-3.5 h-3.5" />
                     Voir le détail
                   </button>
                 </div>
               </div>
 
-              {/* Center: Arborescence */}
-              <div className="col-span-5 glass rounded-xl p-4">
-                <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">Arborescence globale</h3>
+              {/* Center Column - Arborescence */}
+              <div className="glass-card rounded-xl p-5">
+                <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Arborescence globale</h3>
                 <div className="space-y-0.5 max-h-96 overflow-y-auto pr-2">
                   {mockData.map((option) => (
                     <div key={option.id}>
                       <button
                         onClick={() => toggleOption(option.id)}
-                        className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded text-left text-xs transition-colors hover:bg-white/5"
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
                       >
                         {expandedOptions.has(option.id) ? (
                           <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
@@ -342,20 +343,20 @@ export default function GlobalViewProfessional() {
                           <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
                         )}
                         <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
-                        <span className="flex-1 truncate font-medium text-white">{option.name}</span>
-                        <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
+                        <span className="flex-1 truncate font-medium text-white text-xs">{option.name}</span>
+                        <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium whitespace-nowrap" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
                           {getStatusLabel(option.status)}
                         </span>
                         <span className="text-xs font-bold text-gray-300 flex-shrink-0">{option.score}/100</span>
                       </button>
 
                       {expandedOptions.has(option.id) && (
-                        <div className="ml-3 space-y-0.5">
+                        <div className="ml-4 space-y-0.5">
                           {option.posts.map((post) => (
                             <div key={post.id}>
                               <button
                                 onClick={() => togglePost(post.id)}
-                                className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded text-left text-xs transition-colors hover:bg-white/5"
+                                className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
                               >
                                 {expandedPosts.has(post.id) ? (
                                   <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
@@ -363,21 +364,21 @@ export default function GlobalViewProfessional() {
                                   <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
                                 )}
                                 <CheckSquare className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
-                                <span className="flex-1 truncate text-gray-200">{post.name}</span>
-                                <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
+                                <span className="flex-1 truncate text-gray-200 text-xs">{post.name}</span>
+                                <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium whitespace-nowrap" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
                                   {getStatusLabel(post.status)}
                                 </span>
                                 <span className="text-xs font-bold text-gray-300 flex-shrink-0">{post.score}/100</span>
                               </button>
 
                               {expandedPosts.has(post.id) && (
-                                <div className="ml-3 space-y-0.5">
+                                <div className="ml-4 space-y-0.5">
                                   {post.actions.map((action) => (
-                                    <div key={action.id} className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs transition-colors hover:bg-white/5">
+                                    <div key={action.id} className="flex items-center gap-2 px-3 py-2 rounded text-xs transition-colors hover:bg-white/5">
                                       <ChevronRight className="w-3.5 h-3.5 opacity-0 flex-shrink-0" />
                                       <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[action.status]?.text }} />
-                                      <span className="flex-1 truncate text-gray-400">{action.name}</span>
-                                      <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
+                                      <span className="flex-1 truncate text-gray-400 text-xs">{action.name}</span>
+                                      <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium whitespace-nowrap" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
                                         {getStatusLabel(action.status)}
                                       </span>
                                       <span className="text-xs font-bold text-gray-300 flex-shrink-0">{action.score}/100</span>
@@ -394,19 +395,19 @@ export default function GlobalViewProfessional() {
                 </div>
               </div>
 
-              {/* Right: Synthèse + Critères + Alertes */}
-              <div className="col-span-5 space-y-6">
+              {/* Right Column */}
+              <div className="space-y-6">
                 {/* Score Summary */}
-                <div className="glass rounded-xl p-4">
-                  <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">Synthèse des scores</h3>
+                <div className="glass-card rounded-xl p-5">
+                  <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Synthèse des scores</h3>
                   <div className="flex justify-center mb-4">
-                    <div className="relative w-28 h-28">
+                    <div className="relative w-24 h-24">
                       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
                         <circle cx="60" cy="60" r="45" fill="none" stroke="rgba(59, 130, 246, 0.1)" strokeWidth="7" />
                         <circle cx="60" cy="60" r="45" fill="none" stroke="#3B82F6" strokeWidth="7" strokeDasharray={`${(avgScore / 100) * 283} 283`} strokeLinecap="round" />
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-2xl font-bold text-white">{avgScore}</span>
+                        <span className="text-xl font-bold text-white">{avgScore}</span>
                         <span className="text-xs text-gray-500">/100</span>
                       </div>
                     </div>
@@ -431,8 +432,8 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* Criteria */}
-                <div className="glass rounded-xl p-4">
-                  <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">Critères d'évaluation</h3>
+                <div className="glass-card rounded-xl p-5">
+                  <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Critères d'évaluation</h3>
                   <div className="space-y-2 text-xs">
                     {[
                       { label: 'Impact / Valeur', value: '40%' },
@@ -441,7 +442,7 @@ export default function GlobalViewProfessional() {
                       { label: 'Risque', value: '10%' },
                       { label: 'Réversibilité', value: '10%' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between p-1.5 rounded hover:bg-white/5 transition-colors">
+                      <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
                         <span className="text-gray-400">{item.label}</span>
                         <span className="font-semibold text-white">{item.value}</span>
                       </div>
@@ -450,8 +451,8 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* Alerts */}
-                <div className="glass rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-3">
+                <div className="glass-card rounded-xl p-5">
+                  <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Alertes actives</h3>
                     <a href="#" className="text-xs font-semibold transition-colors" style={{ color: '#3B82F6' }}>Voir tout</a>
                   </div>
@@ -462,7 +463,7 @@ export default function GlobalViewProfessional() {
                       { label: 'Postes à revoir', value: '4', color: '#F59E0B' },
                       { label: 'Décisions en attente', value: '2', color: '#3B82F6' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between p-1.5 rounded hover:bg-white/5 transition-colors">
+                      <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
                         <div className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
                           <span className="text-gray-400">{item.label}</span>
@@ -474,8 +475,8 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* Rules */}
-                <div className="glass rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-3">
+                <div className="glass-card rounded-xl p-5">
+                  <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Règles automatiques</h3>
                     <a href="#" className="text-xs font-semibold transition-colors" style={{ color: '#3B82F6' }}>Voir tout</a>
                   </div>
@@ -485,7 +486,7 @@ export default function GlobalViewProfessional() {
                       { label: 'Règle de risque', color: '#22C55E' },
                       { label: 'Règle de délai', color: '#22C55E' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between p-1.5 rounded hover:bg-white/5 transition-colors">
+                      <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
                         <div className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
                           <span className="text-gray-400">{item.label}</span>
@@ -498,10 +499,10 @@ export default function GlobalViewProfessional() {
               </div>
             </div>
 
-            {/* Timeline */}
-            <div className="glass rounded-xl p-4">
-              <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Chronologie globale</h3>
-              <div className="flex items-start justify-between px-2 mb-4">
+            {/* Timeline - Full Width */}
+            <div className="glass-card rounded-xl p-5">
+              <h3 className="text-xs font-bold text-white mb-6 uppercase tracking-wide">Chronologie globale</h3>
+              <div className="flex items-start justify-between px-4 mb-6">
                 {[
                   { label: 'Création de l\'étude', date: '07/04/2024', completed: true },
                   { label: 'Ajout des options', date: '05/04/2024', completed: true },
@@ -510,7 +511,7 @@ export default function GlobalViewProfessional() {
                   { label: 'Dernière action', date: '20/05/2024', completed: true },
                 ].map((item, i) => (
                   <div key={i} className="flex flex-col items-center flex-1 relative">
-                    <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center mb-2 relative z-10" style={{ backgroundColor: item.completed ? '#3B82F6' : 'transparent', borderColor: item.completed ? '#3B82F6' : '#4b5563' }}>
+                    <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center mb-3 relative z-10" style={{ backgroundColor: item.completed ? '#3B82F6' : 'transparent', borderColor: item.completed ? '#3B82F6' : '#4b5563' }}>
                       {item.completed && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
                     </div>
                     {i < 4 && <div className="absolute top-2.5 left-1/2 w-1/2 h-0.5" style={{ backgroundColor: '#3B82F6' }} />}
@@ -519,10 +520,10 @@ export default function GlobalViewProfessional() {
                   </div>
                 ))}
               </div>
-              <div className="p-3 rounded-lg border" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)', borderColor: 'rgba(34, 197, 94, 0.2)' }}>
-                <p className="text-xs text-gray-400 mb-0.5 font-medium">Décision finale prévue</p>
+              <div className="p-4 rounded-lg border" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)', borderColor: 'rgba(34, 197, 94, 0.2)' }}>
+                <p className="text-xs text-gray-400 mb-1 font-medium">Décision finale prévue</p>
                 <p className="text-base font-bold" style={{ color: '#22C55E' }}>19/06/2024</p>
-                <p className="text-xs text-gray-600 mt-0.5">(Dans 30 jours)</p>
+                <p className="text-xs text-gray-600 mt-1">(Dans 30 jours)</p>
               </div>
             </div>
 
