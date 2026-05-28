@@ -256,11 +256,11 @@ export default function GlobalViewProfessional() {
             </div>
 
             {/* Main Layout: Left (Meilleure option + Légende) | Center (Arborescence) | Right (Synthèse + Alertes) */}
-            <div className="grid grid-cols-4 gap-0">
-              {/* Left Column: Best Option + Legend (collés ensemble) */}
-              <div className="flex flex-col">
+            <div className="grid grid-cols-4 gap-6">
+              {/* Left Column: Best Option + Legend */}
+              <div className="flex flex-col gap-6">
                 {/* Best Option */}
-                <div className="rounded-t p-4 border" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: '#10b981', borderBottom: 'none' }}>
+                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: '#10b981' }}>
                   <div className="flex items-center gap-2 mb-3">
                     <Trophy className="w-5 h-5" style={{ color: '#f59e0b' }} />
                     <h3 className="text-sm font-semibold text-white">Meilleure option</h3>
@@ -277,8 +277,8 @@ export default function GlobalViewProfessional() {
                   </button>
                 </div>
 
-                {/* Legend (collé au bloc précédent) */}
-                <div className="rounded-b p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: '#10b981', borderTop: 'none' }}>
+                {/* Legend */}
+                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
                   <h3 className="text-sm font-semibold text-white mb-3">Légende des statuts</h3>
                   <div className="grid grid-cols-2 gap-2">
                     {[
