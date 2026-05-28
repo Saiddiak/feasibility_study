@@ -256,11 +256,11 @@ export default function GlobalViewProfessional() {
             </div>
 
             {/* Main Layout: Left (Meilleure option + Légende) | Center (Arborescence) | Right (Synthèse + Alertes) */}
-            <div className="grid grid-cols-4 gap-6">
-              {/* Left Column: Best Option + Legend */}
-              <div className="space-y-6">
+            <div className="grid grid-cols-4 gap-0">
+              {/* Left Column: Best Option + Legend (collés ensemble) */}
+              <div className="flex flex-col">
                 {/* Best Option */}
-                <div className="rounded p-4 border-2" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: '#10b981' }}>
+                <div className="rounded-t p-4 border" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: '#10b981', borderBottom: 'none' }}>
                   <div className="flex items-center gap-2 mb-3">
                     <Trophy className="w-5 h-5" style={{ color: '#f59e0b' }} />
                     <h3 className="text-sm font-semibold text-white">Meilleure option</h3>
@@ -277,10 +277,10 @@ export default function GlobalViewProfessional() {
                   </button>
                 </div>
 
-                {/* Legend */}
-                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
+                {/* Legend (collé au bloc précédent) */}
+                <div className="rounded-b p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: '#10b981', borderTop: 'none' }}>
                   <h3 className="text-sm font-semibold text-white mb-3">Légende des statuts</h3>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2">
                     {[
                       { status: 'favorable', label: 'Favorable' },
                       { status: 'risk', label: 'Risque' },
@@ -292,7 +292,7 @@ export default function GlobalViewProfessional() {
                       { status: 'pending', label: 'À traiter' },
                     ].map((item) => (
                       <div key={item.status} className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: statusColors[item.status]?.text }} />
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[item.status]?.text }} />
                         <span className="text-xs text-gray-400">{item.label}</span>
                       </div>
                     ))}
@@ -300,7 +300,7 @@ export default function GlobalViewProfessional() {
                 </div>
               </div>
 
-              {/* Center Column: Arborescence */}
+              {/* Center Column: Arborescence (2 colonnes) */}
               <div className="col-span-2 rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
                 <h3 className="text-sm font-semibold text-white mb-4">Arborescence globale</h3>
                 <div className="space-y-0 max-h-96 overflow-y-auto">
@@ -374,7 +374,7 @@ export default function GlobalViewProfessional() {
               </div>
 
               {/* Right Column: Synthèse + Alertes + Règles */}
-              <div className="space-y-6">
+              <div className="flex flex-col gap-0">
                 {/* Score Summary */}
                 <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
                   <h3 className="text-sm font-semibold text-white mb-4">Synthèse des scores</h3>
