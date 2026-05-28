@@ -93,17 +93,6 @@ const mockData: Option[] = [
   },
 ];
 
-const statusDots: Record<string, string> = {
-  favorable: '🟢',
-  risk: '🟡',
-  blocked: '🔴',
-  abandoned: '⚪',
-  in_progress: '🔵',
-  completed: '✓',
-  delayed: '🔴',
-  pending: '⚪',
-};
-
 const statusColors: Record<string, { bg: string; text: string; border: string }> = {
   favorable: { bg: '#064e3b', text: '#10b981', border: '#10b981' },
   risk: { bg: '#78350f', text: '#f59e0b', border: '#f59e0b' },
@@ -266,107 +255,9 @@ export default function GlobalViewProfessional() {
               ))}
             </div>
 
-            {/* Main Layout: Left (Legend + Tree) | Right (Best Option + Scores + Alerts) */}
-            <div className="grid grid-cols-3 gap-6">
-              {/* Left Column: Legend and Tree */}
-              <div className="col-span-2 space-y-6">
-                {/* Legend */}
-                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                  <h3 className="text-sm font-semibold text-white mb-3">Légende des statuts</h3>
-                  <div className="grid grid-cols-4 gap-4">
-                    {[
-                      { status: 'favorable', label: 'Favorable' },
-                      { status: 'risk', label: 'Risque' },
-                      { status: 'blocked', label: 'Bloqué' },
-                      { status: 'abandoned', label: 'Abandonné' },
-                      { status: 'in_progress', label: 'En cours' },
-                      { status: 'completed', label: 'Terminé' },
-                      { status: 'delayed', label: 'En retard' },
-                      { status: 'pending', label: 'À traiter' },
-                    ].map((item) => (
-                      <div key={item.status} className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: statusColors[item.status]?.text }} />
-                        <span className="text-xs text-gray-400">{item.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Arborescence */}
-                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                  <h3 className="text-sm font-semibold text-white mb-4">Arborescence globale</h3>
-                  <div className="space-y-0 max-h-96 overflow-y-auto">
-                    {mockData.map((option) => (
-                      <div key={option.id}>
-                        {/* Option */}
-                        <button
-                          onClick={() => toggleOption(option.id)}
-                          className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-sm transition-colors hover:bg-opacity-50"
-                          style={{ color: '#e5e7eb' }}
-                        >
-                          {expandedOptions.has(option.id) ? (
-                            <ChevronDown className="w-4 h-4" style={{ color: '#60a5fa' }} />
-                          ) : (
-                            <ChevronRight className="w-4 h-4" style={{ color: '#60a5fa' }} />
-                          )}
-                          <FolderOpen className="w-4 h-4" style={{ color: '#60a5fa' }} />
-                          <span className="flex-1 truncate font-medium">{option.name}</span>
-                          <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
-                            {getStatusLabel(option.status)}
-                          </span>
-                          <span className="text-sm font-bold text-white">{option.score} / 100</span>
-                        </button>
-
-                        {/* Posts */}
-                        {expandedOptions.has(option.id) && (
-                          <div className="ml-4 space-y-0">
-                            {option.posts.map((post) => (
-                              <div key={post.id}>
-                                <button
-                                  onClick={() => togglePost(post.id)}
-                                  className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-sm transition-colors hover:bg-opacity-50"
-                                  style={{ color: '#d1d5db' }}
-                                >
-                                  {expandedPosts.has(post.id) ? (
-                                    <ChevronDown className="w-4 h-4" style={{ color: '#93c5fd' }} />
-                                  ) : (
-                                    <ChevronRight className="w-4 h-4" style={{ color: '#93c5fd' }} />
-                                  )}
-                                  <CheckSquare className="w-4 h-4" style={{ color: '#93c5fd' }} />
-                                  <span className="flex-1 truncate">{post.name}</span>
-                                  <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
-                                    {getStatusLabel(post.status)}
-                                  </span>
-                                  <span className="text-sm font-bold text-white">{post.score} / 100</span>
-                                </button>
-
-                                {/* Actions */}
-                                {expandedPosts.has(post.id) && (
-                                  <div className="ml-4 space-y-0">
-                                    {post.actions.map((action) => (
-                                      <div key={action.id} className="flex items-center gap-2 px-2 py-2 text-sm rounded transition-colors" style={{ color: '#9ca3af' }}>
-                                        <ChevronRight className="w-4 h-4 opacity-0" />
-                                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[action.status]?.text }} />
-                                        <span className="flex-1 truncate">{action.name}</span>
-                                        <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
-                                          {getStatusLabel(action.status)}
-                                        </span>
-                                        <span className="font-bold text-white">{action.score} / 100</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Best Option + Scores + Alerts */}
+            {/* Main Layout: Left (Meilleure option + Légende) | Center (Arborescence) | Right (Synthèse + Alertes) */}
+            <div className="grid grid-cols-4 gap-6">
+              {/* Left Column: Best Option + Legend */}
               <div className="space-y-6">
                 {/* Best Option */}
                 <div className="rounded p-4 border-2" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: '#10b981' }}>
@@ -386,6 +277,104 @@ export default function GlobalViewProfessional() {
                   </button>
                 </div>
 
+                {/* Legend */}
+                <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
+                  <h3 className="text-sm font-semibold text-white mb-3">Légende des statuts</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { status: 'favorable', label: 'Favorable' },
+                      { status: 'risk', label: 'Risque' },
+                      { status: 'blocked', label: 'Bloqué' },
+                      { status: 'abandoned', label: 'Abandonné' },
+                      { status: 'in_progress', label: 'En cours' },
+                      { status: 'completed', label: 'Terminé' },
+                      { status: 'delayed', label: 'En retard' },
+                      { status: 'pending', label: 'À traiter' },
+                    ].map((item) => (
+                      <div key={item.status} className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: statusColors[item.status]?.text }} />
+                        <span className="text-xs text-gray-400">{item.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Center Column: Arborescence */}
+              <div className="col-span-2 rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
+                <h3 className="text-sm font-semibold text-white mb-4">Arborescence globale</h3>
+                <div className="space-y-0 max-h-96 overflow-y-auto">
+                  {mockData.map((option) => (
+                    <div key={option.id}>
+                      {/* Option */}
+                      <button
+                        onClick={() => toggleOption(option.id)}
+                        className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-sm transition-colors hover:bg-opacity-50"
+                        style={{ color: '#e5e7eb' }}
+                      >
+                        {expandedOptions.has(option.id) ? (
+                          <ChevronDown className="w-4 h-4" style={{ color: '#60a5fa' }} />
+                        ) : (
+                          <ChevronRight className="w-4 h-4" style={{ color: '#60a5fa' }} />
+                        )}
+                        <FolderOpen className="w-4 h-4" style={{ color: '#60a5fa' }} />
+                        <span className="flex-1 truncate font-medium text-sm">{option.name}</span>
+                        <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
+                          {getStatusLabel(option.status)}
+                        </span>
+                        <span className="text-sm font-bold text-white">{option.score} / 100</span>
+                      </button>
+
+                      {/* Posts */}
+                      {expandedOptions.has(option.id) && (
+                        <div className="ml-4 space-y-0">
+                          {option.posts.map((post) => (
+                            <div key={post.id}>
+                              <button
+                                onClick={() => togglePost(post.id)}
+                                className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-sm transition-colors hover:bg-opacity-50"
+                                style={{ color: '#d1d5db' }}
+                              >
+                                {expandedPosts.has(post.id) ? (
+                                  <ChevronDown className="w-4 h-4" style={{ color: '#93c5fd' }} />
+                                ) : (
+                                  <ChevronRight className="w-4 h-4" style={{ color: '#93c5fd' }} />
+                                )}
+                                <CheckSquare className="w-4 h-4" style={{ color: '#93c5fd' }} />
+                                <span className="flex-1 truncate text-sm">{post.name}</span>
+                                <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
+                                  {getStatusLabel(post.status)}
+                                </span>
+                                <span className="text-sm font-bold text-white">{post.score} / 100</span>
+                              </button>
+
+                              {/* Actions */}
+                              {expandedPosts.has(post.id) && (
+                                <div className="ml-4 space-y-0">
+                                  {post.actions.map((action) => (
+                                    <div key={action.id} className="flex items-center gap-2 px-2 py-2 text-sm rounded transition-colors" style={{ color: '#9ca3af' }}>
+                                      <ChevronRight className="w-4 h-4 opacity-0" />
+                                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[action.status]?.text }} />
+                                      <span className="flex-1 truncate text-xs">{action.name}</span>
+                                      <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
+                                        {getStatusLabel(action.status)}
+                                      </span>
+                                      <span className="text-xs font-bold text-white">{action.score} / 100</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Column: Synthèse + Alertes + Règles */}
+              <div className="space-y-6">
                 {/* Score Summary */}
                 <div className="rounded p-4 border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
                   <h3 className="text-sm font-semibold text-white mb-4">Synthèse des scores</h3>
