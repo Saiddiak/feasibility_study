@@ -97,7 +97,7 @@ export default function GlobalViewProfessional() {
         <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#0f172a' }}>
           <div className="p-4" style={{ backgroundColor: '#020817' }}>
             {/* KPI CARDS - 6 colonnes */}
-            <div className="grid grid-cols-6 gap-3 mb-4">
+            <div className="grid grid-cols-6 gap-4 mb-6">
               {[
                 { icon: FolderOpen, label: 'Options', value: 4, subtext: 'Total des options', color: '#3B82F6' },
                 { icon: CheckSquare, label: 'Postes', value: 12, subtext: 'Tous les postes', color: '#3B82F6' },
@@ -120,9 +120,9 @@ export default function GlobalViewProfessional() {
             </div>
 
             {/* MAIN GRID - 3 COLONNES */}
-            <div className="grid grid-cols-[280px_1fr_320px] gap-3 mb-4">
+            <div className="grid grid-cols-[280px_1fr_320px] gap-4 mb-6">
               {/* LEFT COLUMN */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {/* LEGEND */}
                 <div className="rounded p-3 shadow" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
                   <h3 className="text-xs font-bold text-white mb-2 uppercase tracking-wide">Légende des statuts</h3>
@@ -349,7 +349,7 @@ export default function GlobalViewProfessional() {
               </div>
 
               {/* RIGHT COLUMN */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {/* SCORE SUMMARY */}
                 <div className="rounded p-3 shadow" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
                   <h3 className="text-xs font-bold text-white mb-2 uppercase tracking-wide">Synthèse des scores</h3>
