@@ -225,7 +225,7 @@ export default function GlobalViewProfessional() {
 
         {/* Content - CLEAN LAYOUT WITH PROPER GAPS */}
         <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#0f172a' }}>
-          <div className="p-6 space-y-5" style={{ backgroundColor: '#020817' }}>
+          <div className="p-6 space-y-8" style={{ backgroundColor: '#020817' }}>
             {/* KPI Cards - 6 colonnes avec gap-4 */}
             <div className="grid grid-cols-6 gap-4">
               {[
@@ -251,8 +251,8 @@ export default function GlobalViewProfessional() {
 
             {/* Main Grid - 3 colonnes avec gap-4 */}
             <div className="grid grid-cols-[280px_1fr_360px] gap-4 items-start">
-              {/* Left Column - Légende + Meilleure option avec space-y-4 */}
-              <div className="space-y-4">
+              {/* Left Column - Légende + Meilleure option avec space-y-6 */}
+              <div className="space-y-6">
                 {/* Legend Card */}
                 <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Légende des statuts</h3>
@@ -362,8 +362,8 @@ export default function GlobalViewProfessional() {
                 </div>
               </div>
 
-              {/* Right Column - Synthèse + Critères + Alertes + Règles avec space-y-4 */}
-              <div className="space-y-4">
+              {/* Right Column - Synthèse + Critères + Alertes + Règles avec space-y-6 */}
+              <div className="space-y-6">
                 {/* Score Summary Card */}
                 <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
                   <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Synthèse des scores</h3>
