@@ -106,7 +106,7 @@ export default function GlobalViewProfessional() {
                 { icon: AlertTriangle, label: 'Risques élevés', value: 3, subtext: 'Impact / Probabilité', color: '#EF4444' },
                 { icon: Bell, label: 'Alertes', value: 7, subtext: 'Actives', color: '#8B5CF6' },
               ].map((stat, i) => (
-                <div key={i} className="rounded p-3 shadow" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
+                <div key={i} className="rounded p-3 shadow border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(148, 163, 184, 0.2)' }}>
                   <div className="flex items-start gap-2 mb-2">
                     <div className="w-7 h-7 rounded flex items-center justify-center flex-shrink-0" style={{ background: `${stat.color}20` }}>
                       <stat.icon className="w-3.5 h-3.5" style={{ color: stat.color }} />
@@ -124,7 +124,7 @@ export default function GlobalViewProfessional() {
               {/* LEFT COLUMN */}
               <div className="space-y-4">
                 {/* LEGEND */}
-                <div className="rounded p-3 shadow" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
+                <div className="rounded p-3 shadow border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(148, 163, 184, 0.2)' }}>
                   <h3 className="text-xs font-bold text-white mb-2 uppercase tracking-wide">Légende des statuts</h3>
                   <div className="grid grid-cols-2 gap-1.5 text-xs">
                     {[
@@ -146,7 +146,7 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* BEST OPTION */}
-                <div className="rounded p-3 shadow" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)' }}>
+                <div className="rounded p-3 shadow border" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)', borderColor: 'rgba(34, 197, 94, 0.3)' }}>
                   <div className="flex items-center gap-1.5 mb-2">
                     <Trophy className="w-3.5 h-3.5" style={{ color: '#F59E0B' }} />
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Meilleure option</h3>
@@ -351,7 +351,7 @@ export default function GlobalViewProfessional() {
               {/* RIGHT COLUMN */}
               <div className="space-y-4">
                 {/* SCORE SUMMARY */}
-                <div className="rounded p-3 shadow" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
+                <div className="rounded p-3 shadow border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(148, 163, 184, 0.2)' }}>
                   <h3 className="text-xs font-bold text-white mb-2 uppercase tracking-wide">Synthèse des scores</h3>
                   <div className="flex justify-center mb-2">
                     <div className="relative w-20 h-20">
@@ -405,7 +405,7 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* CRITERIA */}
-                <div className="rounded p-3 shadow" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
+                <div className="rounded p-3 shadow border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(148, 163, 184, 0.2)' }}>
                   <h3 className="text-xs font-bold text-white mb-2 uppercase tracking-wide">Critères d'évaluation</h3>
                   <div className="space-y-1 text-xs">
                     {[
@@ -424,7 +424,7 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* ALERTS */}
-                <div className="rounded p-3 shadow" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
+                <div className="rounded p-3 shadow border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(148, 163, 184, 0.2)' }}>
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Alertes actives</h3>
                     <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
@@ -448,7 +448,7 @@ export default function GlobalViewProfessional() {
                 </div>
 
                 {/* RULES */}
-                <div className="rounded p-3 shadow" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
+                <div className="rounded p-3 shadow border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(148, 163, 184, 0.2)' }}>
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Règles automatiques</h3>
                     <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
@@ -473,7 +473,7 @@ export default function GlobalViewProfessional() {
             </div>
 
             {/* TIMELINE */}
-            <div className="rounded p-3 shadow" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)' }}>
+            <div className="rounded p-3 shadow border" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(148, 163, 184, 0.2)' }}>
               <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">Chronologie globale</h3>
               <div className="flex items-start justify-between px-2 mb-4">
                 {[
