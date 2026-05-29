@@ -54,7 +54,7 @@ export default function GlobalViewProfessional() {
             </button>
           ))}
         </nav>
-        <div className="p-3 space-y-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.1)' }}>
+        <div className="p-3 space-y-4 flex-shrink-0" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.1)' }}>
           <div className="flex items-center gap-2 px-2">
             <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs" style={{ background: 'linear-gradient(135deg, #3B82F6, #1e40af)' }}>
               AD
@@ -97,7 +97,7 @@ export default function GlobalViewProfessional() {
         <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#0f172a' }}>
           <div className="p-6" style={{ backgroundColor: '#020817' }}>
             {/* KPI CARDS - 6 colonnes */}
-            <div className="grid grid-cols-6 gap-3 mb-6">
+            <div className="grid grid-cols-6 gap-4 mb-6">
               {[
                 { icon: FolderOpen, label: 'Options', value: 4, subtext: 'Total des options', color: '#3B82F6' },
                 { icon: CheckSquare, label: 'Postes', value: 12, subtext: 'Tous les postes', color: '#3B82F6' },
@@ -107,7 +107,7 @@ export default function GlobalViewProfessional() {
                 { icon: Bell, label: 'Alertes', value: 7, subtext: 'Actives', color: '#8B5CF6' },
               ].map((stat, i) => (
                 <div key={i} className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
-                  <div className="flex items-start gap-3 mb-3">
+                  <div className="flex items-start gap-4 mb-3">
                     <div className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0" style={{ background: `${stat.color}15` }}>
                       <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
                     </div>
@@ -120,9 +120,9 @@ export default function GlobalViewProfessional() {
             </div>
 
             {/* MAIN GRID - 3 COLONNES */}
-            <div className="grid grid-cols-[280px_1fr_320px] gap-3 mb-6">
+            <div className="grid grid-cols-[280px_1fr_320px] gap-4 mb-6">
               {/* LEFT COLUMN */}
-              <div className="space-y-3">
+              <div className="space-y-6">
                 {/* LEGEND */}
                 <div className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
                   <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">Légende des statuts</h3>
@@ -349,7 +349,7 @@ export default function GlobalViewProfessional() {
               </div>
 
               {/* RIGHT COLUMN */}
-              <div className="space-y-3">
+              <div className="space-y-6">
                 {/* SCORE SUMMARY */}
                 <div className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
                   <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">Synthèse des scores</h3>
