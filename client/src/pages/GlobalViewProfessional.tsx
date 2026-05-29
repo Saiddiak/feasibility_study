@@ -1,107 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, Eye, Filter, Plus, BarChart3, BookOpen, FolderOpen, CheckSquare, AlertTriangle, Bell, FileText, Settings, Sun, Moon, Trophy } from 'lucide-react';
 
-interface Action {
-  id: number;
-  name: string;
-  status: 'completed' | 'in_progress' | 'delayed' | 'pending';
-  score: number;
-}
-
-interface Post {
-  id: number;
-  name: string;
-  status: string;
-  score: number;
-  actions: Action[];
-}
-
-interface Option {
-  id: number;
-  name: string;
-  status: string;
-  score: number;
-  posts: Post[];
-}
-
-const mockData: Option[] = [
-  {
-    id: 1,
-    name: 'Option A - Modernisation du système existant',
-    status: 'risk',
-    score: 62,
-    posts: [
-      {
-        id: 1,
-        name: 'Poste A1 - Analyse et conception',
-        status: 'in_progress',
-        score: 70,
-        actions: [
-          { id: 1, name: 'Action A1.1 - Collecte des besoins', status: 'completed', score: 100 },
-          { id: 2, name: 'Action A1.2 - Spécifications fonctionnelles', status: 'delayed', score: 40 },
-        ],
-      },
-      {
-        id: 2,
-        name: 'Poste A2 - Développement',
-        status: 'in_progress',
-        score: 55,
-        actions: [
-          { id: 3, name: 'Action A2.1 - Développement module 1', status: 'delayed', score: 30 },
-          { id: 4, name: 'Action A2.2 - Développement module 2', status: 'pending', score: 0 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Option B - Nouvelle solution',
-    status: 'favorable',
-    score: 78,
-    posts: [
-      {
-        id: 3,
-        name: 'Poste B1 - Étude de faisabilité',
-        status: 'completed',
-        score: 90,
-        actions: [],
-      },
-      {
-        id: 4,
-        name: 'Poste B2 - Implémentation',
-        status: 'in_progress',
-        score: 65,
-        actions: [],
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: 'Option C - Solution hybride',
-    status: 'risk',
-    score: 58,
-    posts: [],
-  },
-  {
-    id: 4,
-    name: 'Option D - Abandon du projet',
-    status: 'abandoned',
-    score: 20,
-    posts: [],
-  },
-];
-
-const statusColors: Record<string, { bg: string; text: string }> = {
-  favorable: { bg: 'rgba(34, 197, 94, 0.08)', text: '#22C55E' },
-  risk: { bg: 'rgba(245, 158, 11, 0.08)', text: '#F59E0B' },
-  blocked: { bg: 'rgba(239, 68, 68, 0.08)', text: '#EF4444' },
-  abandoned: { bg: 'rgba(107, 114, 128, 0.08)', text: '#9CA3AF' },
-  in_progress: { bg: 'rgba(59, 130, 246, 0.08)', text: '#3B82F6' },
-  completed: { bg: 'rgba(34, 197, 94, 0.08)', text: '#22C55E' },
-  delayed: { bg: 'rgba(239, 68, 68, 0.08)', text: '#EF4444' },
-  pending: { bg: 'rgba(107, 114, 128, 0.08)', text: '#9CA3AF' },
-};
-
 export default function GlobalViewProfessional() {
   const [expandedOptions, setExpandedOptions] = useState<Set<number>>(new Set([1, 2]));
   const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set([1, 3, 4]));
@@ -120,43 +19,16 @@ export default function GlobalViewProfessional() {
     setExpandedPosts(newSet);
   };
 
-  const getStatusLabel = (status: string) => {
-    const labels: Record<string, string> = {
-      favorable: 'Favorable',
-      risk: 'Risque',
-      blocked: 'Bloqué',
-      abandoned: 'Abandonné',
-      in_progress: 'En cours',
-      completed: 'Terminé',
-      delayed: 'En retard',
-      pending: 'À traiter',
-    };
-    return labels[status] || status;
-  };
-
-  const totalOptions = mockData.length;
-  const totalPosts = mockData.reduce((sum, opt) => sum + opt.posts.length, 0);
-  const totalActions = mockData.reduce((sum, opt) => sum + opt.posts.reduce((s, p) => s + p.actions.length, 0), 0);
-  const delayedActions = mockData.reduce((sum, opt) => sum + opt.posts.reduce((s, p) => s + p.actions.filter(a => a.status === 'delayed').length, 0), 0);
-  const highRisks = mockData.filter(opt => opt.status === 'risk').length;
-  const alerts = delayedActions + highRisks;
-
-  const avgScore = Math.round(mockData.reduce((sum, opt) => sum + opt.score, 0) / mockData.length);
-  const bestOption = mockData.reduce((best, opt) => opt.score > best.score ? opt : best);
-
   return (
     <div className="min-h-screen flex" style={{ backgroundColor: '#0f172a' }}>
-      {/* Sidebar */}
+      {/* SIDEBAR */}
       <div className="w-52 flex flex-col flex-shrink-0" style={{ backgroundColor: '#0f172a', borderRight: '1px solid rgba(59, 130, 246, 0.1)' }}>
-        {/* Logo */}
         <div className="px-4 py-5 flex items-center gap-2.5" style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)' }}>
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3B82F6, #1e40af)' }}>
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <span className="font-semibold text-white text-sm">Faisabilité</span>
         </div>
-
-        {/* Navigation */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {[
             { icon: BarChart3, label: 'Tableau de bord', active: true },
@@ -182,8 +54,6 @@ export default function GlobalViewProfessional() {
             </button>
           ))}
         </nav>
-
-        {/* Footer */}
         <div className="p-3 space-y-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.1)' }}>
           <div className="flex items-center gap-2 px-2">
             <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs" style={{ background: 'linear-gradient(135deg, #3B82F6, #1e40af)' }}>
@@ -202,9 +72,9 @@ export default function GlobalViewProfessional() {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
+        {/* HEADER */}
         <div className="px-8 py-5 flex items-center justify-between flex-shrink-0" style={{ backgroundColor: '#0f172a', borderBottom: '1px solid rgba(59, 130, 246, 0.1)' }}>
           <div>
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Étude de faisabilité</p>
@@ -223,185 +93,321 @@ export default function GlobalViewProfessional() {
           </div>
         </div>
 
-        {/* Content - CLEAN LAYOUT WITH PROPER GAPS */}
+        {/* SCROLLABLE CONTENT */}
         <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#0f172a' }}>
-          <div className="p-6 space-y-8" style={{ backgroundColor: '#020817' }}>
-            {/* KPI Cards - 6 colonnes avec gap-4 */}
-            <div className="grid grid-cols-6 gap-4">
+          <div className="p-6" style={{ backgroundColor: '#020817' }}>
+            {/* KPI CARDS - 6 colonnes */}
+            <div className="grid grid-cols-6 gap-3 mb-6">
               {[
-                { icon: FolderOpen, label: 'Options', value: totalOptions, color: '#3B82F6' },
-                { icon: CheckSquare, label: 'Postes', value: totalPosts, color: '#3B82F6' },
-                { icon: CheckSquare, label: 'Actions', value: totalActions, color: '#22C55E' },
-                { icon: AlertTriangle, label: 'Actions en retard', value: delayedActions, color: '#F59E0B' },
-                { icon: AlertTriangle, label: 'Risques élevés', value: highRisks, color: '#EF4444' },
-                { icon: Bell, label: 'Alertes', value: alerts, color: '#8B5CF6' },
+                { icon: FolderOpen, label: 'Options', value: 4, subtext: 'Total des options', color: '#3B82F6' },
+                { icon: CheckSquare, label: 'Postes', value: 12, subtext: 'Tous les postes', color: '#3B82F6' },
+                { icon: CheckSquare, label: 'Actions', value: 28, subtext: 'Toutes les actions', color: '#22C55E' },
+                { icon: AlertTriangle, label: 'Actions en retard', value: 5, subtext: 'À traiter', color: '#F59E0B' },
+                { icon: AlertTriangle, label: 'Risques élevés', value: 3, subtext: 'Impact / Probabilité', color: '#EF4444' },
+                { icon: Bell, label: 'Alertes', value: 7, subtext: 'Actives', color: '#8B5CF6' },
               ].map((stat, i) => (
-                <div key={i} className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
+                <div key={i} className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0" style={{ background: `${stat.color}15` }}>
                       <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
                     </div>
                     <span className="text-lg font-bold text-white">{stat.value}</span>
                   </div>
-                  <p className="text-xs font-medium text-gray-400">{stat.label}</p>
-                  <p className="text-xs text-gray-600 mt-0.5">Total des {stat.label.toLowerCase()}</p>
+                  <p className="text-xs font-medium text-gray-300">{stat.label}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{stat.subtext}</p>
                 </div>
               ))}
             </div>
 
-            {/* Main Grid - 3 colonnes avec gap-4 */}
-            <div className="grid grid-cols-[280px_1fr_360px] gap-4 items-start">
-              {/* Left Column - Légende + Meilleure option avec space-y-6 */}
-              <div className="space-y-6">
-                {/* Legend Card */}
-                <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
-                  <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Légende des statuts</h3>
-                  <div className="grid grid-cols-2 gap-3">
+            {/* MAIN GRID - 3 COLONNES */}
+            <div className="grid grid-cols-[280px_1fr_320px] gap-3 mb-6">
+              {/* LEFT COLUMN */}
+              <div className="space-y-3">
+                {/* LEGEND */}
+                <div className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
+                  <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">Légende des statuts</h3>
+                  <div className="grid grid-cols-2 gap-2">
                     {[
-                      { status: 'favorable', label: 'Favorable' },
-                      { status: 'risk', label: 'Risque' },
-                      { status: 'blocked', label: 'Bloqué' },
-                      { status: 'abandoned', label: 'Abandonné' },
-                      { status: 'in_progress', label: 'En cours' },
-                      { status: 'completed', label: 'Terminé' },
-                      { status: 'delayed', label: 'En retard' },
-                      { status: 'pending', label: 'À traiter' },
-                    ].map((item) => (
-                      <div key={item.status} className="flex items-center gap-2.5">
-                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[item.status]?.text }} />
-                        <span className="text-xs text-gray-400">{item.label}</span>
+                      { status: 'Favorable', color: '#22C55E' },
+                      { status: 'Risque', color: '#F59E0B' },
+                      { status: 'Bloqué', color: '#EF4444' },
+                      { status: 'Abandonné', color: '#6B7280' },
+                      { status: 'En cours', color: '#3B82F6' },
+                      { status: 'Terminé', color: '#10B981' },
+                      { status: 'En retard', color: '#EF4444' },
+                      { status: 'À revoir', color: '#F59E0B' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                        <span className="text-xs text-gray-400">{item.status}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Best Option Card */}
-                <div className="rounded-2xl border-2 border-green-500/50 bg-slate-900/70 p-4 shadow-lg" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)' }}>
-                  <div className="flex items-center gap-2 mb-4">
+                {/* BEST OPTION */}
+                <div className="rounded-lg border-2 p-4 shadow-lg" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)', borderColor: 'rgba(34, 197, 94, 0.3)' }}>
+                  <div className="flex items-center gap-2 mb-3">
                     <Trophy className="w-4 h-4" style={{ color: '#F59E0B' }} />
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Meilleure option</h3>
                   </div>
-                  <p className="text-xs font-semibold mb-1" style={{ color: '#22C55E' }}>{bestOption.name.split(' - ')[1]}</p>
-                  <p className="text-xs mb-4" style={{ color: '#22C55E' }}>{getStatusLabel(bestOption.status)}</p>
-                  <p className="text-3xl font-bold mb-5">
-                    <span style={{ color: '#22C55E' }}>{bestOption.score}</span>
+                  <p className="text-xs font-semibold mb-1" style={{ color: '#22C55E' }}>Option B</p>
+                  <p className="text-xs mb-4" style={{ color: '#22C55E' }}>Favorable</p>
+                  <p className="text-3xl font-bold mb-4">
+                    <span style={{ color: '#22C55E' }}>78</span>
                     <span className="text-gray-500 text-sm"> / 100</span>
                   </p>
-                  <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold rounded-lg" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                  <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold rounded" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
                     <Eye className="w-3.5 h-3.5" />
                     Voir le détail
                   </button>
                 </div>
               </div>
 
-              {/* Center Column - Arborescence Card */}
-              <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
+              {/* CENTER COLUMN - ARBORESCENCE */}
+              <div className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
                 <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Arborescence globale</h3>
-                <div className="space-y-0.5 max-h-96 overflow-y-auto pr-2">
-                  {mockData.map((option) => (
-                    <div key={option.id}>
-                      <button
-                        onClick={() => toggleOption(option.id)}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
-                      >
-                        {expandedOptions.has(option.id) ? (
-                          <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
-                        ) : (
-                          <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
-                        )}
-                        <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
-                        <span className="flex-1 truncate font-medium text-white">{option.name}</span>
-                        <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[option.status]?.bg, color: statusColors[option.status]?.text }}>
-                          {getStatusLabel(option.status)}
-                        </span>
-                        <span className="text-xs font-bold text-gray-300 flex-shrink-0">{option.score}/100</span>
-                      </button>
-
-                      {expandedOptions.has(option.id) && (
-                        <div className="ml-4 space-y-0.5">
-                          {option.posts.map((post) => (
-                            <div key={post.id}>
-                              <button
-                                onClick={() => togglePost(post.id)}
-                                className="w-full flex items-center gap-2 px-3 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
-                              >
-                                {expandedPosts.has(post.id) ? (
-                                  <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
-                                ) : (
-                                  <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
-                                )}
-                                <CheckSquare className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
-                                <span className="flex-1 truncate text-gray-200">{post.name}</span>
-                                <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[post.status]?.bg, color: statusColors[post.status]?.text }}>
-                                  {getStatusLabel(post.status)}
-                                </span>
-                                <span className="text-xs font-bold text-gray-300 flex-shrink-0">{post.score}/100</span>
-                              </button>
-
-                              {expandedPosts.has(post.id) && (
-                                <div className="ml-4 space-y-0.5">
-                                  {post.actions.map((action) => (
-                                    <div key={action.id} className="flex items-center gap-2 px-3 py-2 rounded text-xs transition-colors hover:bg-white/5">
-                                      <ChevronRight className="w-3.5 h-3.5 opacity-0 flex-shrink-0" />
-                                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: statusColors[action.status]?.text }} />
-                                      <span className="flex-1 truncate text-gray-400">{action.name}</span>
-                                      <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: statusColors[action.status]?.bg, color: statusColors[action.status]?.text }}>
-                                        {getStatusLabel(action.status)}
-                                      </span>
-                                      <span className="text-xs font-bold text-gray-300 flex-shrink-0">{action.score}/100</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
+                <div className="space-y-0 max-h-96 overflow-y-auto pr-2">
+                  {/* OPTION A */}
+                  <div>
+                    <button
+                      onClick={() => toggleOption(1)}
+                      className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
+                    >
+                      {expandedOptions.has(1) ? (
+                        <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      ) : (
+                        <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
                       )}
-                    </div>
-                  ))}
+                      <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      <span className="flex-1 truncate font-medium text-white text-xs">Option A - Modernisation du système existant</span>
+                      <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B' }}>Risque</span>
+                      <span className="text-xs font-bold text-gray-300 flex-shrink-0">62/100</span>
+                    </button>
+                    {expandedOptions.has(1) && (
+                      <div className="ml-4 space-y-0">
+                        {/* POST A1 */}
+                        <div>
+                          <button
+                            onClick={() => togglePost(1)}
+                            className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
+                          >
+                            {expandedPosts.has(1) ? (
+                              <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                            ) : (
+                              <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                            )}
+                            <CheckSquare className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                            <span className="flex-1 truncate text-gray-300 text-xs">Poste A1 - Analyse et conception</span>
+                            <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(59, 130, 246, 0.15)', color: '#3B82F6' }}>En cours</span>
+                            <span className="text-xs font-bold text-gray-300 flex-shrink-0">70/100</span>
+                          </button>
+                          {expandedPosts.has(1) && (
+                            <div className="ml-4 space-y-0">
+                              <div className="flex items-center gap-2 px-2 py-2 rounded text-xs transition-colors hover:bg-white/5">
+                                <ChevronRight className="w-3.5 h-3.5 opacity-0 flex-shrink-0" />
+                                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: '#22C55E' }} />
+                                <span className="flex-1 truncate text-gray-400 text-xs">Action A1.1 - Collecte des besoins</span>
+                                <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(34, 197, 94, 0.15)', color: '#22C55E' }}>Terminé</span>
+                                <span className="text-xs font-bold text-gray-300 flex-shrink-0">100/100</span>
+                              </div>
+                              <div className="flex items-center gap-2 px-2 py-2 rounded text-xs transition-colors hover:bg-white/5">
+                                <ChevronRight className="w-3.5 h-3.5 opacity-0 flex-shrink-0" />
+                                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: '#EF4444' }} />
+                                <span className="flex-1 truncate text-gray-400 text-xs">Action A1.2 - Spécifications fonctionnelles</span>
+                                <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}>En retard</span>
+                                <span className="text-xs font-bold text-gray-300 flex-shrink-0">40/100</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        {/* POST A2 */}
+                        <div>
+                          <button
+                            onClick={() => togglePost(2)}
+                            className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
+                          >
+                            {expandedPosts.has(2) ? (
+                              <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                            ) : (
+                              <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                            )}
+                            <CheckSquare className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                            <span className="flex-1 truncate text-gray-300 text-xs">Poste A2 - Développement</span>
+                            <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(59, 130, 246, 0.15)', color: '#3B82F6' }}>En cours</span>
+                            <span className="text-xs font-bold text-gray-300 flex-shrink-0">55/100</span>
+                          </button>
+                          {expandedPosts.has(2) && (
+                            <div className="ml-4 space-y-0">
+                              <div className="flex items-center gap-2 px-2 py-2 rounded text-xs transition-colors hover:bg-white/5">
+                                <ChevronRight className="w-3.5 h-3.5 opacity-0 flex-shrink-0" />
+                                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: '#EF4444' }} />
+                                <span className="flex-1 truncate text-gray-400 text-xs">Action A2.1 - Développement module 1</span>
+                                <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}>En retard</span>
+                                <span className="text-xs font-bold text-gray-300 flex-shrink-0">30/100</span>
+                              </div>
+                              <div className="flex items-center gap-2 px-2 py-2 rounded text-xs transition-colors hover:bg-white/5">
+                                <ChevronRight className="w-3.5 h-3.5 opacity-0 flex-shrink-0" />
+                                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: '#6B7280' }} />
+                                <span className="flex-1 truncate text-gray-400 text-xs">Action A2.2 - Développement module 2</span>
+                                <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(107, 114, 128, 0.15)', color: '#9CA3AF' }}>En attente</span>
+                                <span className="text-xs font-bold text-gray-300 flex-shrink-0">0/100</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* OPTION B */}
+                  <div>
+                    <button
+                      onClick={() => toggleOption(2)}
+                      className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
+                    >
+                      {expandedOptions.has(2) ? (
+                        <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      ) : (
+                        <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      )}
+                      <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      <span className="flex-1 truncate font-medium text-white text-xs">Option B - Nouvelle solution</span>
+                      <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(34, 197, 94, 0.15)', color: '#22C55E' }}>Favorable</span>
+                      <span className="text-xs font-bold text-gray-300 flex-shrink-0">78/100</span>
+                    </button>
+                    {expandedOptions.has(2) && (
+                      <div className="ml-4 space-y-0">
+                        <button
+                          onClick={() => togglePost(3)}
+                          className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
+                        >
+                          {expandedPosts.has(3) ? (
+                            <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                          ) : (
+                            <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                          )}
+                          <CheckSquare className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                          <span className="flex-1 truncate text-gray-300 text-xs">Poste B1 - Étude de faisabilité</span>
+                          <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(34, 197, 94, 0.15)', color: '#22C55E' }}>Terminé</span>
+                          <span className="text-xs font-bold text-gray-300 flex-shrink-0">90/100</span>
+                        </button>
+                        <button
+                          onClick={() => togglePost(4)}
+                          className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
+                        >
+                          {expandedPosts.has(4) ? (
+                            <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                          ) : (
+                            <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                          )}
+                          <CheckSquare className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#93c5fd' }} />
+                          <span className="flex-1 truncate text-gray-300 text-xs">Poste B2 - Implémentation</span>
+                          <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(59, 130, 246, 0.15)', color: '#3B82F6' }}>En cours</span>
+                          <span className="text-xs font-bold text-gray-300 flex-shrink-0">65/100</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* OPTION C */}
+                  <div>
+                    <button
+                      onClick={() => toggleOption(3)}
+                      className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
+                    >
+                      {expandedOptions.has(3) ? (
+                        <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      ) : (
+                        <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      )}
+                      <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      <span className="flex-1 truncate font-medium text-white text-xs">Option C - Solution hybride</span>
+                      <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B' }}>Risque</span>
+                      <span className="text-xs font-bold text-gray-300 flex-shrink-0">58/100</span>
+                    </button>
+                  </div>
+
+                  {/* OPTION D */}
+                  <div>
+                    <button
+                      onClick={() => toggleOption(4)}
+                      className="w-full flex items-center gap-2 px-2 py-2 rounded text-left text-xs transition-colors hover:bg-white/5"
+                    >
+                      {expandedOptions.has(4) ? (
+                        <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      ) : (
+                        <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      )}
+                      <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                      <span className="flex-1 truncate font-medium text-white text-xs">Option D - Abandon du projet</span>
+                      <span className="text-xs px-2 py-0.5 rounded flex-shrink-0 font-medium" style={{ backgroundColor: 'rgba(107, 114, 128, 0.15)', color: '#9CA3AF' }}>Abandonné</span>
+                      <span className="text-xs font-bold text-gray-300 flex-shrink-0">20/100</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* Right Column - Synthèse + Critères + Alertes + Règles avec space-y-6 */}
-              <div className="space-y-6">
-                {/* Score Summary Card */}
-                <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
-                  <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Synthèse des scores</h3>
-                  <div className="flex justify-center mb-4">
+              {/* RIGHT COLUMN */}
+              <div className="space-y-3">
+                {/* SCORE SUMMARY */}
+                <div className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
+                  <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">Synthèse des scores</h3>
+                  <div className="flex justify-center mb-3">
                     <div className="relative w-24 h-24">
                       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
                         <circle cx="60" cy="60" r="45" fill="none" stroke="rgba(59, 130, 246, 0.1)" strokeWidth="7" />
-                        <circle cx="60" cy="60" r="45" fill="none" stroke="#3B82F6" strokeWidth="7" strokeDasharray={`${(avgScore / 100) * 283} 283`} strokeLinecap="round" />
+                        <circle cx="60" cy="60" r="45" fill="none" stroke="#3B82F6" strokeWidth="7" strokeDasharray="141.5 283" strokeLinecap="round" />
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-xl font-bold text-white">{avgScore}</span>
+                        <span className="text-xl font-bold text-white">65</span>
                         <span className="text-xs text-gray-500">/100</span>
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-2 text-xs">
-                    {[
-                      { label: 'Impact / Valeur', value: '40%', color: '#3B82F6' },
-                      { label: 'Faisabilité', value: '20%', color: '#22C55E' },
-                      { label: 'Coût - Temps', value: '20%', color: '#F59E0B' },
-                      { label: 'Risque', value: '10%', color: '#EF4444' },
-                      { label: 'Réversibilité', value: '10%', color: '#8B5CF6' },
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
-                          <span className="text-gray-400">{item.label}</span>
-                        </div>
-                        <span className="font-semibold text-white">{item.value}</span>
+                  <div className="space-y-1.5 text-xs">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#3B82F6' }} />
+                        <span className="text-gray-400">Impact / Valeur</span>
                       </div>
-                    ))}
+                      <span className="font-semibold text-white">40%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#22C55E' }} />
+                        <span className="text-gray-400">Faisabilité</span>
+                      </div>
+                      <span className="font-semibold text-white">20%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#F59E0B' }} />
+                        <span className="text-gray-400">Coût - Temps</span>
+                      </div>
+                      <span className="font-semibold text-white">20%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#EF4444' }} />
+                        <span className="text-gray-400">Risque</span>
+                      </div>
+                      <span className="font-semibold text-white">10%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#8B5CF6' }} />
+                        <span className="text-gray-400">Réversibilité</span>
+                      </div>
+                      <span className="font-semibold text-white">10%</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Criteria Card */}
-                <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
-                  <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Critères d'évaluation</h3>
-                  <div className="space-y-2 text-xs">
+                {/* CRITERIA */}
+                <div className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
+                  <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">Critères d'évaluation</h3>
+                  <div className="space-y-1.5 text-xs">
                     {[
                       { label: 'Impact / Valeur', value: '40%' },
                       { label: 'Faisabilité', value: '20%' },
@@ -409,7 +415,7 @@ export default function GlobalViewProfessional() {
                       { label: 'Risque', value: '10%' },
                       { label: 'Réversibilité', value: '10%' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
+                      <div key={i} className="flex items-center justify-between">
                         <span className="text-gray-400">{item.label}</span>
                         <span className="font-semibold text-white">{item.value}</span>
                       </div>
@@ -417,20 +423,20 @@ export default function GlobalViewProfessional() {
                   </div>
                 </div>
 
-                {/* Alerts Card */}
-                <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
-                  <div className="flex items-center justify-between mb-4">
+                {/* ALERTS */}
+                <div className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
+                  <div className="flex items-center justify-between mb-3">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Alertes actives</h3>
                     <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
                   </div>
-                  <div className="space-y-2 text-xs">
+                  <div className="space-y-1.5 text-xs">
                     {[
                       { label: 'Actions en retard', value: '5', color: '#EF4444' },
                       { label: 'Risques élevés', value: '3', color: '#EF4444' },
                       { label: 'Postes à revoir', value: '4', color: '#F59E0B' },
                       { label: 'Décisions en attente', value: '2', color: '#3B82F6' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
+                      <div key={i} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
                           <span className="text-gray-400">{item.label}</span>
@@ -441,19 +447,19 @@ export default function GlobalViewProfessional() {
                   </div>
                 </div>
 
-                {/* Rules Card */}
-                <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
-                  <div className="flex items-center justify-between mb-4">
+                {/* RULES */}
+                <div className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
+                  <div className="flex items-center justify-between mb-3">
                     <h3 className="text-xs font-bold text-white uppercase tracking-wide">Règles automatiques</h3>
                     <a href="#" className="text-xs font-semibold" style={{ color: '#3B82F6' }}>Voir tout</a>
                   </div>
-                  <div className="space-y-2 text-xs">
+                  <div className="space-y-1.5 text-xs">
                     {[
                       { label: 'Règle de score global', color: '#22C55E' },
                       { label: 'Règle de risque', color: '#22C55E' },
                       { label: 'Règle de délai', color: '#22C55E' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors">
+                      <div key={i} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
                           <span className="text-gray-400">{item.label}</span>
@@ -466,10 +472,10 @@ export default function GlobalViewProfessional() {
               </div>
             </div>
 
-            {/* Timeline Card - Full Width */}
-            <div className="rounded-2xl border border-slate-700/50 bg-slate-900/70 p-4 shadow-lg">
-              <h3 className="text-xs font-bold text-white mb-6 uppercase tracking-wide">Chronologie globale</h3>
-              <div className="flex items-start justify-between px-4 mb-6">
+            {/* TIMELINE */}
+            <div className="rounded-lg border p-4 shadow-lg" style={{ backgroundColor: 'rgba(30, 58, 138, 0.4)', borderColor: 'rgba(30, 58, 138, 0.6)' }}>
+              <h3 className="text-xs font-bold text-white mb-4 uppercase tracking-wide">Chronologie globale</h3>
+              <div className="flex items-start justify-between px-2 mb-6">
                 {[
                   { label: 'Création de l\'étude', date: '07/04/2024', completed: true },
                   { label: 'Ajout des options', date: '05/04/2024', completed: true },
@@ -487,15 +493,15 @@ export default function GlobalViewProfessional() {
                   </div>
                 ))}
               </div>
-              <div className="p-4 rounded-lg border" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)', borderColor: 'rgba(34, 197, 94, 0.2)' }}>
+              <div className="p-3 rounded border" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)', borderColor: 'rgba(34, 197, 94, 0.2)' }}>
                 <p className="text-xs text-gray-400 mb-1 font-medium">Décision finale prévue</p>
                 <p className="text-base font-bold" style={{ color: '#22C55E' }}>19/06/2024</p>
                 <p className="text-xs text-gray-600 mt-1">(Dans 30 jours)</p>
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="text-xs text-gray-600 pt-2" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.1)' }}>
+            {/* FOOTER */}
+            <div className="text-xs text-gray-600 pt-3 mt-3" style={{ borderTop: '1px solid rgba(59, 130, 246, 0.1)' }}>
               Étude ID : #1234 • Créée le 07/04/2024 par Admin • Dernière mise à jour : 20/05/2024 à 14:30
             </div>
           </div>
