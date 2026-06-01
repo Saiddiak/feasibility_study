@@ -194,6 +194,10 @@ const Donut = ({ value }: { value: number }) => {
 export default function GlobalViewProfessional() {
   const [expandedOptions, setExpandedOptions] = useState<Set<number>>(new Set([1, 2]));
   const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set([1, 2, 3, 4]));
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newOptionName, setNewOptionName] = useState('');
+  const [filterStatus, setFilterStatus] = useState<StatusKey | 'all'>('all');
+  const [data, setData] = useState(mockData);
 
   const stats = useMemo(() => {
     const totalOptions = mockData.length;
@@ -222,6 +226,30 @@ export default function GlobalViewProfessional() {
     next.has(id) ? next.delete(id) : next.add(id);
     setExpandedPosts(next);
   };
+
+  const handleAddOption = () => {
+    if (newOptionName.trim()) {
+      const newOption: Option = {
+        id: Math.max(...data.map(o => o.id), 0) + 1,
+        name: newOptionName,
+        status: 'idea',
+        score: 0,
+        posts: [],
+      };
+      setData([...data, newOption]);
+      setNewOptionName('');
+      setShowAddModal(false);
+    }
+  };
+
+  const handleExpandAll = () => {
+    const allOptionIds = new Set(data.map(opt => opt.id));
+    const allPostIds = new Set(data.flatMap(opt => opt.posts.map(post => post.id)));
+    setExpandedOptions(allOptionIds);
+    setExpandedPosts(allPostIds);
+  };
+
+  const filteredData = filterStatus === 'all' ? data : data.filter(opt => opt.status === filterStatus);
 
   return (
     <div className="min-h-screen overflow-hidden bg-[#020817] text-slate-100" style={{ backgroundImage: 'radial-gradient(circle at 30% -10%, rgba(37,99,235,.18), transparent 32%), radial-gradient(circle at 88% 8%, rgba(59,130,246,.13), transparent 28%)' }}>
@@ -272,15 +300,46 @@ export default function GlobalViewProfessional() {
               <p className="mt-1 text-sm text-slate-400">Synthèse complète de l'étude et de toutes les options</p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="inline-flex items-center gap-2 rounded-lg border border-slate-500/60 bg-slate-900/60 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-black/10 transition hover:border-blue-400/70 hover:bg-blue-500/10">
-                <Filter className="h-4 w-4" />
-                Filtrer
-              </button>
-              <button className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(37,99,235,.28)] transition hover:brightness-110">
+              <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value as StatusKey | 'all')} className="inline-flex items-center gap-2 rounded-lg border border-slate-500/60 bg-slate-900/60 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-black/10 transition hover:border-blue-400/70 hover:bg-blue-500/10 cursor-pointer">
+                <option value="all">Tous les statuts</option>
+                <option value="favorable">Favorable</option>
+                <option value="risk">Risque</option>
+                <option value="blocked">Bloqué</option>
+                <option value="abandoned">Abandonné</option>
+                <option value="completed">Terminé</option>
+                <option value="waiting">En attente</option>
+                <option value="idea">Idée</option>
+              </select>
+              <button onClick={() => setShowAddModal(true)} className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(37,99,235,.28)] transition hover:brightness-110">
                 <Plus className="h-4 w-4" />
                 Ajouter
               </button>
             </div>
+
+            {showAddModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                <div className="rounded-lg bg-slate-900 p-6 shadow-xl">
+                  <h2 className="mb-4 text-lg font-bold text-white">Ajouter une nouvelle option</h2>
+                  <input
+                    type="text"
+                    value={newOptionName}
+                    onChange={(e) => setNewOptionName(e.target.value)}
+                    placeholder="Nom de l'option"
+                    className="mb-4 w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-white placeholder-slate-500"
+                    onKeyPress={(e) => e.key === 'Enter' && handleAddOption()}
+                    autoFocus
+                  />
+                  <div className="flex gap-3">
+                    <button onClick={() => setShowAddModal(false)} className="flex-1 rounded-lg border border-slate-700 px-4 py-2 text-white transition hover:bg-slate-800">
+                      Annuler
+                    </button>
+                    <button onClick={handleAddOption} className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700">
+                      Ajouter
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </header>
 
           <div className="min-h-0 flex-1 overflow-y-auto px-7 pb-7">
@@ -339,7 +398,7 @@ export default function GlobalViewProfessional() {
                   <span className="text-right">Score global</span>
                 </div>
                 <div className="max-h-[548px] overflow-y-auto px-3 py-2">
-                  {mockData.map((option) => (
+                  {filteredData.map((option) => (
                     <div key={option.id}>
                       <button onClick={() => toggleOption(option.id)} className="grid w-full grid-cols-[1fr_120px_96px] items-center gap-2 rounded-md px-2 py-2.5 text-left transition hover:bg-white/[.04]">
                         <div className="flex min-w-0 items-center gap-2 text-sm font-medium text-white">

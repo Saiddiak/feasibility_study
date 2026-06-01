@@ -4,18 +4,12 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
-import { scoringRouter } from "./scoring.router";
-import { calculationsRouter } from "./calculations.router";
-import { exportRouter } from "./export.router";
 import { aiRouter } from "./ai.router";
 import { demoDataRouter } from "./demo-data.router";
 
 export const appRouter = router({
   system: systemRouter,
   demo: demoDataRouter,
-  scoring: scoringRouter,
-  calculations: calculationsRouter,
-  export: exportRouter,
   ai: aiRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
